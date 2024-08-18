@@ -18,7 +18,7 @@
       });
     }
   
-    // Load CSS
+    // Load CSS files
     loadCSS('https://urirolls5987.github.io/accessibros_widget/styles.css');
     loadCSS('https://fonts.googleapis.com/icon?family=Material+Icons&text=ads_click,text_rotation_none,text_fields,format_size,blind,restart_alt,close,link,local_parking,contrast,spellcheck,local_library,format_bold,format_line_spacing');
   
@@ -30,11 +30,11 @@
         widgetContainer.innerHTML = data;
         document.body.appendChild(widgetContainer);
   
-        // Load and execute JavaScript after HTML is inserted
+        // Ensure JavaScript is loaded after HTML is inserted
         return loadScript('https://urirolls5987.github.io/accessibros_widget/script.js');
       })
       .then(() => {
-        // Initialize the widget
+        // Check if the widget's initialization method exists and initialize it
         if (typeof window.AccessibilityWidget !== 'undefined' && typeof window.AccessibilityWidget.init === 'function') {
           window.AccessibilityWidget.init();
         } else {
@@ -43,3 +43,4 @@
       })
       .catch(error => console.error('Error loading the widget:', error));
   })();
+  
