@@ -1,553 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap");
-      .asw-menu {
-        font-family: "Inter";
-        position: fixed;
-        right: 20px;
-        top: 20px;
-        border-radius: 8px;
-        box-shadow: 0px 0px 20px #00000080;
-        opacity: 1;
-        transition: 0.3s;
-        z-index: 500000;
-        overflow: hidden;
-        background: #f9f9f9;
-        width: 500px;
-        line-height: 1;
-        font-size: 16px;
-        letter-spacing: 0.015em;
-        height: calc(100% - 40px - 75px);
-        color: #000;
-      }
-
-      .asw-menu-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding-left: 18px;
-        height: 60px;
-        font-size: 18px;
-        font-weight: 700;
-        border-bottom: 1px solid #dedede;
-        color: #000;
-      }
-
-      .asw-menu-header > div {
-        display: flex;
-      }
-
-      .asw-menu-header div[role="button"] {
-        padding: 12px;
-        cursor: pointer;
-        color: #000;
-      }
-
-      .asw-menu-header div[role="button"]:hover {
-        opacity: 0.8;
-        color: #000;
-      }
-
-      .asw-card {
-        margin: 0 15px 30px;
-      }
-
-      .asw-items {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 1rem;
-      }
-
-      .asw-btn {
-        aspect-ratio: 6 / 5;
-        border-radius: 4px;
-        padding: 0 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        text-align: center;
-        color: #333;
-        font-size: 16px !important;
-        background: #fff;
-        border: 1px solid #dedede;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        line-height: 1.4;
-      }
-
-      .asw-btn .asw-translate {
-        font-size: 15px !important;
-      }
-
-      .asw-btn .material-icons {
-        margin-bottom: 16px;
-      }
-
-      .asw-btn:hover {
-        border-color: #419d4a;
-      }
-
-      .asw-btn.asw-selected {
-        background: #419d4a;
-        color: white;
-        border-color: #419d4a;
-      }
-
-      .asw-menu-content {
-        overflow-y: scroll;
-        max-height: calc(100% - 80px);
-        color: #333;
-        padding: 15px 0;
-      }
-
-      .asw-widget,
-      .asw-menu {
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        font-weight: 400;
-        -webkit-font-smoothing: antialiased;
-      }
-
-      .asw-widget *,
-      .asw-menu * {
-        box-sizing: border-box;
-      }
-
-      .asw-menu-btn {
-        position: fixed;
-        z-index: 500000;
-        right: 20px;
-        bottom: 20px;
-        background: #419d4a;
-        box-shadow: 0 5px 15px 0 rgb(37 44 97 / 15%),
-          0 2px 4px 0 rgb(93 100 148 / 20%);
-        transition: 0.3s;
-        border-radius: 50%;
-        align-items: center;
-        justify-content: center;
-        transform: scale(1);
-        width: 54px;
-        height: 54px;
-        display: flex;
-        cursor: pointer;
-        border: 4px solid white;
-        outline: 4px solid #419d4a;
-        text-decoration: none;
-      }
-
-      .asw-menu-btn:hover {
-        transform: scale(1.1);
-      }
-
-      .material-icons.md-36.white {
-        font-size: 36px;
-        color: #f9f9f9;
-      }
-
-      @font-face {
-        font-family: "OpenDyslexic3";
-        src: url("https://website-widgets.pages.dev/fonts/OpenDyslexic3-Regular.woff")
-            format("woff"),
-          url("https://website-widgets.pages.dev/fonts/OpenDyslexic3-Regular.ttf")
-            format("truetype");
-      }
-
-      @media only screen and (max-width: 560px) {
-        .asw-menu-btn {
-          width: 38px;
-          height: 38px;
-        }
-
-        .asw-menu-btn svg {
-          width: 24px;
-          height: 24px;
-          min-height: 24px;
-          min-width: 24px;
-          max-width: 24px;
-          max-height: 24px;
-        }
-      }
-
-      @media only screen and (max-width: 560px) {
-        .asw-menu {
-          width: calc(100% - 20px);
-          left: 10px;
-        }
-      }
-
-      @media only screen and (max-width: 420px) {
-        .asw-items {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 0.5rem;
-        }
-
-        .asw-menu {
-          width: calc(100% - 20px);
-          left: 10px;
-        }
-      }
-    </style>
-  </head>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accessibility Widget</title>
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons&amp;text=ads_click,text_rotation_none,text_fields,format_size,blind,restart_alt,close,link,local_parking,contrast,spellcheck,local_library,format_bold,format_line_spacing"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons&amp;text=ads_click,text_rotation_none,text_fields,format_size,blind,restart_alt,close,link,local_parking,contrast,spellcheck,local_library,format_bold,format_line_spacing" rel="stylesheet">
+</head>
+<body>
     <div class="asw-menu" style="display: none" id="aswMenu">
-      <div class="asw-menu-header">
-        <div class="asw-translate">Accessibility Menu</div>
-        <div>
-          <div role="button" class="asw-menu-reset" title="Reset settings">
-            <span class="material-icons">restart_alt</span>
-          </div>
-          <div role="button" class="asw-menu-close" title="Close">
-            <span class="material-icons">close</span>
-          </div>
+        <div class="asw-menu-header">
+            <div class="asw-translate">Accessibility Menu</div>
+            <div>
+                <div role="button" class="asw-menu-reset" title="Reset settings">
+                    <span class="material-icons">restart_alt</span>
+                </div>
+                <div role="button" class="asw-menu-close" title="Close">
+                    <span class="material-icons">close</span>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="asw-menu-content">
-        <div class="asw-card">
-          <div class="asw-items content">
-            <button class="asw-btn" type="button" id="increaseFontSize">
-              <span class="material-icons">format_size</span>
-              <span class="asw-translate">Increase Font Size</span>
-            </button>
-            <button class="asw-btn" type="button" id="decreaseFontSize">
-              <span class="material-icons">text_fields</span>
-              <span class="asw-translate">Decrease Font Size</span>
-            </button>
-            <button class="asw-btn" type="button" id="adjustLineHeight">
-              <span class="material-icons">format_line_spacing</span>
-              <span class="asw-translate">Line Spacing</span>
-            </button>
-            <button class="asw-btn" type="button" id="adjustLetterSpacing">
-              <span class="material-icons">text_rotation_none</span>
-              <span class="asw-translate">Letter Spacing</span>
-            </button>
-            <button class="asw-btn" type="button" id="enableDyslexicFont">
-              <span class="material-icons">spellcheck</span>
-              <span class="asw-translate">Dyslexic Font</span>
-            </button>
-            <button class="asw-btn" type="button" id="enableHighlightHeadings">
-              <span class="material-icons">local_parking</span>
-              <span class="asw-translate">Highlight Headings</span>
-            </button>
-            <button class="asw-btn" type="button" id="enableHighlightLinks">
-              <span class="material-icons">link</span>
-              <span class="asw-translate">Highlight Links</span>
-            </button>
-            <button class="asw-btn" type="button" id="adjustFontWeight">
-              <span class="material-icons">format_bold</span>
-              <span class="asw-translate">Font Weight</span>
-            </button>
-            <button class="asw-btn" type="button" id="enableBigCursor">
-              <span class="material-icons">ads_click</span>
-              <span class="asw-translate">Bigger Cursor</span>
-            </button>
-            <button class="asw-btn" type="button" id="adjustContrast">
-              <span class="material-icons">contrast</span>
-              <span class="asw-translate">Contrast</span>
-            </button>
-          </div>
+        <div class="asw-menu-content">
+            <div class="asw-card">
+                <div class="asw-items content">
+                    <button class="asw-btn" type="button" id="increaseFontSize">
+                        <span class="material-icons">format_size</span>
+                        <span class="asw-translate">Increase Font Size</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="decreaseFontSize">
+                        <span class="material-icons">text_fields</span>
+                        <span class="asw-translate">Decrease Font Size</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="adjustLineHeight">
+                        <span class="material-icons">format_line_spacing</span>
+                        <span class="asw-translate">Line Spacing</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="adjustLetterSpacing">
+                        <span class="material-icons">text_rotation_none</span>
+                        <span class="asw-translate">Letter Spacing</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="enableDyslexicFont">
+                        <span class="material-icons">spellcheck</span>
+                        <span class="asw-translate">Dyslexic Font</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="enableHighlightHeadings">
+                        <span class="material-icons">local_parking</span>
+                        <span class="asw-translate">Highlight Headings</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="enableHighlightLinks">
+                        <span class="material-icons">link</span>
+                        <span class="asw-translate">Highlight Links</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="adjustFontWeight">
+                        <span class="material-icons">format_bold</span>
+                        <span class="asw-translate">Font Weight</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="enableBigCursor">
+                        <span class="material-icons">ads_click</span>
+                        <span class="asw-translate">Bigger Cursor</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="adjustContrast">
+                        <span class="material-icons">contrast</span>
+                        <span class="asw-translate">Contrast</span>
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
     <div class="asw-widget">
-      <a
-        class="asw-menu-btn"
-        title="Open Accessibility Menu"
-        role="button"
-        aria-expanded="false"
-      >
-        <span class="material-icons md-36 white">blind</span>
-      </a>
+        <a class="asw-menu-btn" title="Open Accessibility Menu" role="button" aria-expanded="false">
+            <span class="material-icons md-36 white">blind</span>
+        </a>
     </div>
-    <script>
-      console.log("Accessibility script loaded");
-
-      window.AccessibilityWidget = {
-        toggleMenu: function () {
-          console.log("Toggle menu called");
-          var menu = document.getElementById("aswMenu");
-          if (menu.style.display === "none") {
-            menu.style.display = "block";
-            window.parent.postMessage({ type: "toggleMenu", open: true }, "*");
-          } else {
-            menu.style.display = "none";
-            window.parent.postMessage({ type: "toggleMenu", open: false }, "*");
-          }
-        },
-
-        applyStyles: function (styles) {
-          window.parent.postMessage(
-            { type: "applyStyles", styles: styles },
-            "*"
-          );
-        },
-
-        adjustFontSize: function (multiply = 0) {
-          console.log("Adjusting font size");
-          const storedPercentage = parseFloat(
-            localStorage.getItem("fontPercentage")
-          );
-          if (multiply) {
-            if (storedPercentage) {
-              const newPercentage = storedPercentage + multiply;
-              localStorage.setItem("fontPercentage", newPercentage);
-            } else {
-              const newPercentage = 1 + multiply;
-              localStorage.setItem("fontPercentage", newPercentage);
-            }
-          }
-          const percentage =
-            parseFloat(localStorage.getItem("fontPercentage")) || 1;
-          this.applyStyles(`* { font-size: ${percentage * 100}% !important; }`);
-        },
-
-        adjustLetterSpacing: function (increment = 0) {
-          console.log("Adjusting letter spacing");
-          let isLetterSpacingEnabled = parseInt(
-            localStorage.getItem("isLetterSpacingEnabled")
-          );
-          if (!increment) {
-            isLetterSpacingEnabled = !isLetterSpacingEnabled;
-            increment = 0.1;
-          }
-          if (!isLetterSpacingEnabled) {
-            this.applyStyles(
-              `* { letter-spacing: ${increment}em !important; }`
-            );
-            localStorage.setItem("isLetterSpacingEnabled", 1);
-          } else {
-            this.applyStyles(`* { letter-spacing: normal !important; }`);
-            localStorage.setItem("isLetterSpacingEnabled", 0);
-          }
-        },
-
-        enableDyslexicFont: function (load = false) {
-          console.log("Toggling dyslexic font");
-          let isDyslexicFontEnabled = parseInt(
-            localStorage.getItem("isDyslexicFontEnabled")
-          );
-          if (load) {
-            isDyslexicFontEnabled = !isDyslexicFontEnabled;
-          }
-          if (!isDyslexicFontEnabled) {
-            this.applyStyles(
-              `* { font-family: OpenDyslexic3, sans-serif !important; }`
-            );
-            localStorage.setItem("isDyslexicFontEnabled", 1);
-          } else {
-            this.applyStyles(`* { font-family: inherit !important; }`);
-            localStorage.setItem("isDyslexicFontEnabled", 0);
-          }
-        },
-
-        enableBigCursor: function (load = false) {
-          console.log("Toggling big cursor");
-          let isBigCursorEnabled = parseInt(
-            localStorage.getItem("isBigCursorEnabled")
-          );
-          if (load) {
-            isBigCursorEnabled = !isBigCursorEnabled;
-          }
-          if (!isBigCursorEnabled) {
-            this.applyStyles(
-              `* { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 512 512'%3E%3Cpath d='M429.742 319.31L82.49 0l-.231 471.744 105.375-100.826 61.89 141.083 96.559-42.358-61.89-141.083 145.549-9.25zM306.563 454.222l-41.62 18.259-67.066-152.879-85.589 81.894.164-333.193 245.264 225.529-118.219 7.512 67.066 152.878z' xmlns='http://www.w3.org/2000/svg'/%3E%3C/svg%3E"), default !important; }`
-            );
-            localStorage.setItem("isBigCursorEnabled", 1);
-          } else {
-            this.applyStyles(`* { cursor: default !important; }`);
-            localStorage.setItem("isBigCursorEnabled", 0);
-          }
-        },
-
-        enableHighlightLinks: function (load = false) {
-          console.log("Toggling highlight links");
-          let isHighlightLinks = parseInt(
-            localStorage.getItem("isHighlightLinks")
-          );
-          if (load) {
-            isHighlightLinks = !isHighlightLinks;
-          }
-          if (!isHighlightLinks) {
-            this.applyStyles(
-              `a, button { text-decoration: underline !important; font-weight: 800 !important; font-size: 110% !important; color: #ff0000 !important; }`
-            );
-            localStorage.setItem("isHighlightLinks", 1);
-          } else {
-            this.applyStyles(
-              `a, button { text-decoration: inherit !important; font-weight: inherit !important; font-size: inherit !important; color: inherit !important; }`
-            );
-            localStorage.setItem("isHighlightLinks", 0);
-          }
-        },
-
-        enableHighlightHeadings: function (load = false) {
-          console.log("Toggling highlight headings");
-          let isHighlightHeadings = parseInt(
-            localStorage.getItem("isHighlightHeadings")
-          );
-          if (load) {
-            isHighlightHeadings = !isHighlightHeadings;
-          }
-          if (!isHighlightHeadings) {
-            this.applyStyles(
-              `h1, h2, h3, heading1 { color: #ff0000 !important; text-decoration: underline !important; }`
-            );
-            localStorage.setItem("isHighlightHeadings", 1);
-          } else {
-            this.applyStyles(
-              `h1, h2, h3, heading1 { color: inherit !important; text-decoration: inherit !important; }`
-            );
-            localStorage.setItem("isHighlightHeadings", 0);
-          }
-        },
-
-        adjustLineHeight: function (increment = 0) {
-          console.log("Adjusting line height");
-          let isLineHeightEnabled = parseInt(
-            localStorage.getItem("isLineHeightEnabled")
-          );
-          if (!increment) {
-            isLineHeightEnabled = !isLineHeightEnabled;
-            increment = 1;
-          }
-          if (!isLineHeightEnabled) {
-            this.applyStyles(
-              `* { line-height: ${1.5 + increment} !important; }`
-            );
-            localStorage.setItem("isLineHeightEnabled", 1);
-          } else {
-            this.applyStyles(`* { line-height: normal !important; }`);
-            localStorage.setItem("isLineHeightEnabled", 0);
-          }
-        },
-
-        adjustFontWeight: function (increment = 100) {
-          console.log("Adjusting font weight");
-          let isFontWeightEnabled = parseInt(
-            localStorage.getItem("isFontWeightEnabled")
-          );
-          if (increment === 100) {
-            isFontWeightEnabled = !isFontWeightEnabled;
-            increment = 400;
-          }
-          if (!isFontWeightEnabled) {
-            this.applyStyles(
-              `* { font-weight: ${400 + increment} !important; }`
-            );
-            localStorage.setItem("isFontWeightEnabled", 1);
-          } else {
-            this.applyStyles(`* { font-weight: normal !important; }`);
-            localStorage.setItem("isFontWeightEnabled", 0);
-          }
-        },
-
-        adjustContrast: function (load = false) {
-          console.log("Adjusting contrast");
-          let isContrastEnabled = parseInt(
-            localStorage.getItem("isContrastEnabled")
-          );
-          if (load) {
-            isContrastEnabled = !isContrastEnabled;
-          }
-          if (!isContrastEnabled) {
-            this.applyStyles(
-              `* { color: #ffff00 !important; background-color: #0000ff !important; }`
-            );
-            localStorage.setItem("isContrastEnabled", 1);
-          } else {
-            this.applyStyles(
-              `* { color: inherit !important; background-color: inherit !important; }`
-            );
-            localStorage.setItem("isContrastEnabled", 0);
-          }
-        },
-
-        reset: function () {
-          console.log("Resetting all settings");
-          localStorage.clear();
-          this.onPageLoad();
-        },
-
-        onPageLoad: function () {
-          console.log("Running onPageLoad function");
-          this.adjustFontSize();
-          this.adjustLetterSpacing();
-          this.enableDyslexicFont(true);
-          this.enableBigCursor(true);
-          this.enableHighlightLinks(true);
-          this.enableHighlightHeadings(true);
-          this.adjustLineHeight();
-          this.adjustFontWeight();
-          this.adjustContrast(true);
-        },
-
-        attachEventListeners: function () {
-          console.log("Attaching event listeners");
-          document
-            .querySelector(".asw-menu-btn")
-            .addEventListener("click", this.toggleMenu.bind(this));
-          document
-            .querySelector(".asw-menu-close")
-            .addEventListener("click", this.toggleMenu.bind(this));
-          document
-            .querySelector(".asw-menu-reset")
-            .addEventListener("click", this.reset.bind(this));
-          document
-            .getElementById("increaseFontSize")
-            .addEventListener("click", () => this.adjustFontSize(0.1));
-          document
-            .getElementById("decreaseFontSize")
-            .addEventListener("click", () => this.adjustFontSize(-0.1));
-          document
-            .getElementById("adjustLineHeight")
-            .addEventListener("click", () => this.adjustLineHeight(1));
-          document
-            .getElementById("adjustLetterSpacing")
-            .addEventListener("click", () => this.adjustLetterSpacing(0.1));
-          document
-            .getElementById("enableDyslexicFont")
-            .addEventListener("click", () => this.enableDyslexicFont());
-          document
-            .getElementById("enableHighlightHeadings")
-            .addEventListener("click", () => this.enableHighlightHeadings());
-          document
-            .getElementById("enableHighlightLinks")
-            .addEventListener("click", () => this.enableHighlightLinks());
-          document
-            .getElementById("adjustFontWeight")
-            .addEventListener("click", () => this.adjustFontWeight(400));
-          document
-            .getElementById("enableBigCursor")
-            .addEventListener("click", () => this.enableBigCursor());
-          document
-            .getElementById("adjustContrast")
-            .addEventListener("click", () => this.adjustContrast());
-        },
-
-        init: function () {
-          console.log("Initializing accessibility widget");
-          this.onPageLoad();
-          this.attachEventListeners();
-          // Notify the parent window that the widget is ready
-          window.parent.postMessage({ type: "widgetReady" }, "*");
-        },
-      };
-
-      // Initialize the widget when the script loads
-      window.AccessibilityWidget.init();
-    </script>
-  </body>
+    <script src="script.js"></script>
+</body>
 </html>
