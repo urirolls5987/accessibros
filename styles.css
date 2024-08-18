@@ -1,0 +1,190 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap");
+
+.asw-menu {
+  font-family: "Inter";
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 20px #00000080;
+  opacity: 1;
+  transition: 0.3s;
+  z-index: 500000;
+  overflow: hidden;
+  background: #f9f9f9;
+  width: 500px;
+  line-height: 1;
+  font-size: 16px;
+  letter-spacing: 0.015em;
+  height: calc(100% - 40px - 75px);
+  color: #000;
+}
+
+.asw-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 18px;
+  height: 60px;
+  font-size: 18px;
+  font-weight: 700;
+  border-bottom: 1px solid #dedede;
+  color: #000;
+}
+
+.asw-menu-header > div {
+  display: flex;
+}
+
+.asw-menu-header div[role="button"] {
+  padding: 12px;
+  cursor: pointer;
+  color: #000;
+}
+
+.asw-menu-header div[role="button"]:hover {
+  opacity: 0.8;
+  color: #000;
+}
+
+.asw-card {
+  margin: 0 15px 30px;
+}
+
+.asw-items {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.asw-btn {
+  aspect-ratio: 6 / 5;
+  border-radius: 4px;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  color: #333;
+  font-size: 16px !important;
+  background: #fff;
+  border: 1px solid #dedede;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.asw-btn .asw-translate {
+  font-size: 15px !important;
+}
+
+.asw-btn .material-icons {
+  margin-bottom: 16px;
+}
+
+.asw-btn:hover {
+  border-color: #419d4a;
+}
+
+.asw-btn.asw-selected {
+  background: #419d4a;
+  color: white;
+  border-color: #419d4a;
+}
+
+.asw-menu-content {
+  overflow-y: scroll;
+  max-height: calc(100% - 80px);
+  color: #333;
+  padding: 15px 0;
+}
+
+.asw-widget,
+.asw-menu {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+.asw-widget *,
+.asw-menu * {
+  box-sizing: border-box;
+}
+
+.asw-menu-btn {
+  position: fixed;
+  z-index: 500000;
+  right: 20px;
+  bottom: 20px;
+  background: #419d4a;
+  box-shadow: 0 5px 15px 0 rgb(37 44 97 / 15%),
+    0 2px 4px 0 rgb(93 100 148 / 20%);
+  transition: 0.3s;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  transform: scale(1);
+  width: 54px;
+  height: 54px;
+  display: flex;
+  cursor: pointer;
+  border: 4px solid white;
+  outline: 4px solid #419d4a;
+  text-decoration: none;
+}
+
+.asw-menu-btn:hover {
+  transform: scale(1.1);
+}
+
+.material-icons.md-36.white {
+  font-size: 36px;
+  color: #f9f9f9;
+}
+
+@font-face {
+  font-family: "OpenDyslexic3";
+  src: url("https://website-widgets.pages.dev/fonts/OpenDyslexic3-Regular.woff")
+      format("woff"),
+    url("https://website-widgets.pages.dev/fonts/OpenDyslexic3-Regular.ttf")
+      format("truetype");
+}
+
+@media only screen and (max-width: 560px) {
+  .asw-menu-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .asw-menu-btn svg {
+    width: 24px;
+    height: 24px;
+    min-height: 24px;
+    min-width: 24px;
+    max-width: 24px;
+    max-height: 24px;
+  }
+}
+
+@media only screen and (max-width: 560px) {
+  .asw-menu {
+    width: calc(100% - 20px);
+    left: 10px;
+  }
+}
+
+@media only screen and (max-width: 420px) {
+  .asw-items {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .asw-menu {
+    width: calc(100% - 20px);
+    left: 10px;
+  }
+}
