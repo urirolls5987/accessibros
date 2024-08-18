@@ -1,5 +1,5 @@
 (function() {
-    fetch('https://github.com/urirolls5987/accessibros_widget/blob/main/index.html')
+    fetch('https://urirolls5987.github.io/accessibros_widget/index.html')
       .then(response => response.text())
       .then(data => {
         // 3. Inject the HTML into the body
