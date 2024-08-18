@@ -1,70 +1,75 @@
 <!DOCTYPE html>
-<html>
-  <body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessibility Widget</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons&amp;text=ads_click,text_rotation_none,text_fields,format_size,blind,restart_alt,close,link,local_parking,contrast,spellcheck,local_library,format_bold,format_line_spacing" rel="stylesheet">
+</head>
+<body>
     <div class="asw-menu" style="display: none" id="aswMenu">
-      <div class="asw-menu-header">
-        <div class="asw-translate">Accessibility Menu</div>
-        <div>
-          <div role="button" class="asw-menu-reset" title="Reset settings" onclick="reset()">
-            <span class="material-icons"> restart_alt </span>
-          </div>
-          <div role="button" class="asw-menu-close" title="Close" onclick="toggleMenu()">
-            <span class="material-icons"> close </span>
-          </div>
+        <div class="asw-menu-header">
+            <div class="asw-translate">Accessibility Menu</div>
+            <div>
+                <div role="button" class="asw-menu-reset" title="Reset settings">
+                    <span class="material-icons">restart_alt</span>
+                </div>
+                <div role="button" class="asw-menu-close" title="Close">
+                    <span class="material-icons">close</span>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="asw-menu-content">
-        <div class="asw-card">
-          <div class="asw-items content">
-            <button class="asw-btn" type="button" onclick="adjustFontSize(0.1)">
-              <span class="material-icons">format_size</span>
-              <span class="asw-translate">Increase Font Size</span>
-            </button>
-            <button class="asw-btn" type="button" onclick="adjustFontSize(-0.1)">
-              <span class="material-icons">text_fields</span>
-              <span class="asw-translate">Decrease Font Size</span>
-            </button>
-            <button class="asw-btn" type="button" onclick=" adjustLineHeight(1)">
-              <span class="material-icons">format_line_spacing</span>
-              <span class="asw-translate">Line Spacing</span>
-            </button>
-            <button class="asw-btn" type="button" onclick="adjustLetterSpacing(0.1)">
-              <span class="material-icons">text_rotation_none</span>
-              <span class="asw-translate">Letter Spacing</span>
-            </button>
-            <button class="asw-btn" type="button" onclick="enableDyslexicFont()">
-              <span class="material-icons">spellcheck</span>
-              <span class="asw-translate">Dyslexic Font</span>
-            </button>
-            <button class="asw-btn" type="button" onclick="enableHighlightHeadings()">
-              <span class="material-icons">local_parking</span>
-              <span class="asw-translate">Highlight Headings</span>
-            </button>
-            <button class="asw-btn" type="button" onclick="enableHighlightLinks()">
-              <span class="material-icons">link</span>
-              <span class="asw-translate">Highlight Links</span>
-            </button>
-            <button class="asw-btn" type="button" onclick="adjustFontWeight(400)">
-              <span class="material-icons">format_bold</span>
-              <span class="asw-translate">Font Weight</span>
-            </button>
-            <button class="asw-btn" type="button" onclick="enableBigCursor()">
-              <span class="material-icons">ads_click</span>
-              <span class="asw-translate">Bigger Cursor</span>
-            </button>
-            <button class="asw-btn" type="button" onclick="adjustContrast()">
-              <span class="material-icons">contrast</span>
-              <span class="asw-translate">Contrast</span>
-            </button>
-          </div>
+        <div class="asw-menu-content">
+            <div class="asw-card">
+                <div class="asw-items content">
+                    <button class="asw-btn" type="button" id="increaseFontSize">
+                        <span class="material-icons">format_size</span>
+                        <span class="asw-translate">Increase Font Size</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="decreaseFontSize">
+                        <span class="material-icons">text_fields</span>
+                        <span class="asw-translate">Decrease Font Size</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="adjustLineHeight">
+                        <span class="material-icons">format_line_spacing</span>
+                        <span class="asw-translate">Line Spacing</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="adjustLetterSpacing">
+                        <span class="material-icons">text_rotation_none</span>
+                        <span class="asw-translate">Letter Spacing</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="enableDyslexicFont">
+                        <span class="material-icons">spellcheck</span>
+                        <span class="asw-translate">Dyslexic Font</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="enableHighlightHeadings">
+                        <span class="material-icons">local_parking</span>
+                        <span class="asw-translate">Highlight Headings</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="enableHighlightLinks">
+                        <span class="material-icons">link</span>
+                        <span class="asw-translate">Highlight Links</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="adjustFontWeight">
+                        <span class="material-icons">format_bold</span>
+                        <span class="asw-translate">Font Weight</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="enableBigCursor">
+                        <span class="material-icons">ads_click</span>
+                        <span class="asw-translate">Bigger Cursor</span>
+                    </button>
+                    <button class="asw-btn" type="button" id="adjustContrast">
+                        <span class="material-icons">contrast</span>
+                        <span class="asw-translate">Contrast</span>
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
     <div class="asw-widget">
-      <a class="asw-menu-btn" title="Open Accessibility Menu" role="button" aria-expanded="false" onclick="toggleMenu()">
-        <span class="material-icons md-36 white"> blind </span>
-      </a>
+        <a class="asw-menu-btn" title="Open Accessibility Menu" role="button" aria-expanded="false">
+            <span class="material-icons md-36 white">blind</span>
+        </a>
     </div>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons&amp;text=ads_click,text_rotation_none,text_fields,format_size,blind,restart_alt,close,link,local_parking,contrast,spellcheck,local_library,format_bold,format_line_spacing" rel="stylesheet" />
-  </body>
+</body>
 </html>

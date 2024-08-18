@@ -35,8 +35,10 @@
       })
       .then(() => {
         // Initialize the widget
-        if (typeof onPageLoad === 'function') {
-          onPageLoad();
+        if (typeof window.AccessibilityWidget !== 'undefined' && typeof window.AccessibilityWidget.init === 'function') {
+          window.AccessibilityWidget.init();
+        } else {
+          console.error('Accessibility widget initialization function not found');
         }
       })
       .catch(error => console.error('Error loading the widget:', error));
