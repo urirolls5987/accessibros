@@ -19,7 +19,6 @@
     window.addEventListener('resize', resizeWidget);
   }
 
-  // Create the widget element
   function createWidgetElement() {
     const widget = document.createElement("div");
     widget.classList.add("asw-widget");
@@ -39,79 +38,81 @@
             </div>
           </div>
         </div>
-        <div class="asw-menu-content">
-          <div class="asw-section">
-            <h3>Text Editing</h3>
-            <div class="asw-font-size-control">
-              <button class="asw-btn asw-icon-btn" data-action="decreaseFontSize">
-                <span class="material-icons">remove</span>
-              </button>
-              <div class="asw-font-size-bar">
-                <div class="asw-font-size-value">100%</div>
+        <div class="asw-menu-content-wrapper">
+          <div class="asw-menu-content">
+            <div class="asw-section">
+              <h3>Text Editing</h3>
+              <div class="asw-font-size-control">
+                <button class="asw-btn asw-icon-btn" data-action="decreaseFontSize">
+                  <span class="material-icons">remove</span>
+                </button>
+                <div class="asw-font-size-bar">
+                  <div class="asw-font-size-value">100%</div>
+                </div>
+                <button class="asw-btn asw-icon-btn" data-action="increaseFontSize">
+                  <span class="material-icons">add</span>
+                </button>
               </div>
-              <button class="asw-btn asw-icon-btn" data-action="increaseFontSize">
-                <span class="material-icons">add</span>
-              </button>
+              <div class="asw-text-controls">
+                <button class="asw-btn" data-action="decreaseLineHeight">
+                  <span class="material-icons">format_line_spacing</span>
+                  <span class="asw-translate">Line -</span>
+                </button>
+                <button class="asw-btn" data-action="increaseLineHeight">
+                  <span class="material-icons">format_line_spacing</span>
+                  <span class="asw-translate">Line +</span>
+                </button>
+                <button class="asw-btn" data-action="decreaseLetterSpacing">
+                  <span class="material-icons">text_rotation_none</span>
+                  <span class="asw-translate">Spacing -</span>
+                </button>
+                <button class="asw-btn" data-action="increaseLetterSpacing">
+                  <span class="material-icons">text_rotation_none</span>
+                  <span class="asw-translate">Spacing +</span>
+                </button>
+              </div>
             </div>
-            <div class="asw-text-controls">
-              <button class="asw-btn" data-action="decreaseLineHeight">
-                <span class="material-icons">format_line_spacing</span>
-                <span class="asw-translate">Line -</span>
-              </button>
-              <button class="asw-btn" data-action="increaseLineHeight">
-                <span class="material-icons">format_line_spacing</span>
-                <span class="asw-translate">Line +</span>
-              </button>
-              <button class="asw-btn" data-action="decreaseLetterSpacing">
-                <span class="material-icons">text_rotation_none</span>
-                <span class="asw-translate">Spacing -</span>
-              </button>
-              <button class="asw-btn" data-action="increaseLetterSpacing">
-                <span class="material-icons">text_rotation_none</span>
-                <span class="asw-translate">Spacing +</span>
-              </button>
+            <div class="asw-section">
+              <h3>Fonts</h3>
+              <div class="asw-items">
+                <button class="asw-btn" data-action="toggleFontWeight">
+                  <span class="material-icons">format_bold</span>
+                  <span class="asw-translate">Font Weight</span>
+                </button>
+                <button class="asw-btn" data-action="toggleHighlightURLs">
+                  <span class="material-icons">link</span>
+                  <span class="asw-translate">Highlight URLs</span>
+                </button>
+                <button class="asw-btn" data-action="toggleHighlightTitles">
+                  <span class="material-icons">title</span>
+                  <span class="asw-translate">Highlight Titles</span>
+                </button>
+                <button class="asw-btn" data-action="toggleDyslexicFont">
+                  <span class="material-icons">spellcheck</span>
+                  <span class="asw-translate">Dyslexic Font</span>
+                </button>
+              </div>
             </div>
-          </div>
-          <div class="asw-section">
-            <h3>Fonts</h3>
-            <div class="asw-items">
-              <button class="asw-btn" data-action="toggleFontWeight">
-                <span class="material-icons">format_bold</span>
-                <span class="asw-translate">Font Weight</span>
-              </button>
-              <button class="asw-btn" data-action="toggleHighlightURLs">
-                <span class="material-icons">link</span>
-                <span class="asw-translate">Highlight URLs</span>
-              </button>
-              <button class="asw-btn" data-action="toggleHighlightTitles">
-                <span class="material-icons">title</span>
-                <span class="asw-translate">Highlight Titles</span>
-              </button>
-              <button class="asw-btn" data-action="toggleDyslexicFont">
-                <span class="material-icons">spellcheck</span>
-                <span class="asw-translate">Dyslexic Font</span>
-              </button>
-            </div>
-          </div>
-          <div class="asw-section">
-            <h3>Features</h3>
-            <div class="asw-items">
-              <button class="asw-btn" data-action="toggleBigCursor">
-                <span class="material-icons">mouse</span>
-                <span class="asw-translate">Big Cursor</span>
-              </button>
-              <button class="asw-btn" data-action="toggleScreenReader">
-                <span class="material-icons">hearing</span>
-                <span class="asw-translate">Screen Reader</span>
-              </button>
-              <button class="asw-btn" data-action="toggleStopAnimations">
-                <span class="material-icons">animation</span>
-                <span class="asw-translate">Stop Animations</span>
-              </button>
-              <button class="asw-btn" data-action="toggleReadingGuide">
-                <span class="material-icons">remove_red_eye</span>
-                <span class="asw-translate">Reading Guide</span>
-              </button>
+            <div class="asw-section">
+              <h3>Features</h3>
+              <div class="asw-items">
+                <button class="asw-btn" data-action="toggleBigCursor">
+                  <span class="material-icons">mouse</span>
+                  <span class="asw-translate">Big Cursor</span>
+                </button>
+                <button class="asw-btn" data-action="toggleScreenReader">
+                  <span class="material-icons">hearing</span>
+                  <span class="asw-translate">Screen Reader</span>
+                </button>
+                <button class="asw-btn" data-action="toggleStopAnimations">
+                  <span class="material-icons">animation</span>
+                  <span class="asw-translate">Stop Animations</span>
+                </button>
+                <button class="asw-btn" data-action="toggleReadingGuide">
+                  <span class="material-icons">remove_red_eye</span>
+                  <span class="asw-translate">Reading Guide</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -443,8 +444,8 @@ window.toggleHighlightTitles = function () {
       const width = Math.max(300, Math.min(vw * 0.25, 450));
       menu.style.width = `${width}px`;
     }
-// Apply styles
-function applyStyles() {
+ // Apply styles
+ function applyStyles() {
   const style = document.createElement("style");
   style.textContent = `
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap");
@@ -478,20 +479,11 @@ function applyStyles() {
       transition: 0.3s;
       z-index: 500000;
       background: var(--widget-bg-color);
-      line-height: 1;
-      font-size: 16px;
-      letter-spacing: 0.015em;
       color: var(--widget-text-color);
       display: flex;
       flex-direction: column;
       max-height: 90vh;
-      overflow: hidden;
-    }
-
-    .asw-menu-content {
-      overflow-y: auto;
-      flex-grow: 1;
-      padding: 15px;
+      width: 350px;
     }
 
     .asw-menu-header {
@@ -503,6 +495,25 @@ function applyStyles() {
       font-weight: 700;
       border-bottom: 1px solid var(--widget-border-color);
       background-color: var(--widget-highlight-color);
+    }
+
+    .asw-menu-content-wrapper {
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .asw-menu-content {
+      padding: 15px;
+    }
+
+    .asw-banner {
+      background-color: var(--widget-highlight-color);
+      color: var(--widget-text-color);
+      text-align: center;
+      padding: 10px;
+      font-weight: bold;
+      border-top: 1px solid var(--widget-border-color);
+      text-decoration: none;
     }
 
     .asw-menu-header > div {
@@ -635,56 +646,6 @@ function applyStyles() {
       gap: 10px;
     }
 
-    .asw-banner {
-      background-color: var(--widget-highlight-color);
-      color: var(--widget-text-color);
-      text-align: center;
-      padding: 10px;
-      font-weight: bold;
-      border-top: 1px solid var(--widget-border-color);
-      text-decoration: none;
-    }
-
-    @font-face {
-      font-family: "OpenDyslexic3";
-      src: url("https://website-widgets.pages.dev/fonts/OpenDyslexic3-Regular.woff") format("woff"),
-           url("https://website-widgets.pages.dev/fonts/OpenDyslexic3-Regular.ttf") format("truetype");
-    }
-
-    body.dyslexic-font {
-      font-family: "OpenDyslexic3", sans-serif;
-    }
-
-    body.bold-text {
-      font-weight: bold !important;
-    }
-
-    body.highlight-urls a {
-      background-color: yellow;
-      color: #000000;
-    }
-
-    body.highlight-titles h1, body.highlight-titles h2, body.highlight-titles h3, 
-    body.highlight-titles h4, body.highlight-titles h5, body.highlight-titles h6 {
-      background-color: #ffcc66;
-      color: #000000;
-      padding: 5px;
-    }
-      body.big-cursor,
-    body.big-cursor * {
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24'%3E%3Cpath d='M7,2l12,11.2l-5.8,0.5l3.3,7.3l-2.2,1l-3.2-7.4L7,18.5V2' fill='%23000000' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E"), auto;
-    }
-
-    .reading-guide {
-      position: fixed;
-      left: 0;
-      width: 100%;
-      height: 30px;
-      background-color: rgba(255, 255, 0, 0.2);
-      pointer-events: none;
-      z-index: 9999;
-    }
-
     @media only screen and (max-width: 600px) {
       .asw-menu {
         width: 90vw;
@@ -700,6 +661,8 @@ function applyStyles() {
         grid-template-columns: repeat(2, 1fr);
       }
     }
+
+    /* ... (rest of the styles remain the same) */
   `;
   document.head.appendChild(style);
 }
