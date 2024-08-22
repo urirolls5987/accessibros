@@ -537,27 +537,38 @@
         flex-direction: column;
       }
 
-      .asw-menu-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: #fde2aa;
-        color: #333;
-        padding: 20px;
-        font-weight: 600;
-        font-size: 20px;
-        height: 120px;
-        box-sizing: border-box;
-      }
+    .asw-menu-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fde2aa;
+      color: #333;
+      padding: 20px;
+      font-weight: 700; // Changed from 600 to 700
+      font-size: 24px; // Increased from 20px to 24px
+      height: 120px; // Changed from 60px to 120px
+      box-sizing: border-box;
+    }
 
-      .asw-menu-header > div {
-        display: flex;
-      }
+    .asw-menu-header > div {
+      display: flex;
+      gap: 10px; // Added gap for spacing between buttons
+    }
 
-      .asw-menu-header div[role="button"] {
-        padding: 8px;
-        cursor: pointer;
-      }
+    .asw-menu-header div[role="button"] {
+      padding: 12px; // Increased from 8px to 12px
+      cursor: pointer;
+      background-color: rgba(0, 0, 0, 0.1); // Added background for visibility
+      border-radius: 50%; // Made buttons circular
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .asw-menu-header div[role="button"] .material-icons {
+      font-size: 28px; // Increased icon size
+    }
+
 
       .asw-menu-content {
         flex-grow: 1;
@@ -654,23 +665,24 @@
         margin: 30px 0;
       }
 
-      .asw-footer {
-        background: #fde2aa;
-        padding: 0 20px;
-        text-align: center;
-        height: 120px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box;
-      }
+    .asw-footer {
+      background: #fde2aa;
+      padding: 0 20px;
+      text-align: center;
+      height: 120px; // Changed from 60px to 120px
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
 
-      .asw-footer a {
-        color: #333;
-        text-decoration: none;
-        font-size: 18px;
-        font-weight: 700;
-      }
+    .asw-footer a {
+      color: #333;
+      text-decoration: none;
+      font-size: 22px; // Increased from 18px to 22px
+      font-weight: 700;
+    }
+
 
       .asw-overlay {
         position: fixed;
