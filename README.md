@@ -17,7 +17,7 @@ The **Enhanced Accessibility Widget** improves web accessibility with customizab
 2. Add the following script tag before the closing `</body>` tag:
 
 ```html
-<script src="path-to/widget.min.js"></script>
+<script src="https://urirolls5987.github.io/accessibros_widget/widget.min.js"></script>
 ```
 
 3. The widget will automatically appear on your site.
@@ -33,5 +33,3 @@ For further customization, edit the CSS and JavaScript variables within the `wid
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
-```
