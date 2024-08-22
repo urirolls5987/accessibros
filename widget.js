@@ -39,39 +39,39 @@
         <div class="asw-menu-content">
           <div class="asw-card">
             <div class="asw-card-title">Text Adjustments</div>
-            <div class="asw-adjust-control">
-              <div class="asw-minus" data-key="font-size" role="button" aria-pressed="false">
+            <div class="asw-adjust-control" data-key="font-size">
+              <div class="asw-minus" role="button" aria-pressed="false">
                 <span class="material-icons">remove</span>
               </div>
               <div class="asw-control-label">
                 <span class="material-icons">format_size</span>
                 <span class="asw-amount">100%</span>
               </div>
-              <div class="asw-plus" data-key="font-size" role="button" aria-pressed="false">
+              <div class="asw-plus" role="button" aria-pressed="false">
                 <span class="material-icons">add</span>
               </div>
             </div>
-            <div class="asw-adjust-control">
-              <div class="asw-minus" data-key="line-height" role="button" aria-pressed="false">
+            <div class="asw-adjust-control" data-key="line-height">
+              <div class="asw-minus" role="button" aria-pressed="false">
                 <span class="material-icons">remove</span>
               </div>
               <div class="asw-control-label">
                 <span class="material-icons">format_line_spacing</span>
                 <span class="asw-amount">100%</span>
               </div>
-              <div class="asw-plus" data-key="line-height" role="button" aria-pressed="false">
+              <div class="asw-plus" role="button" aria-pressed="false">
                 <span class="material-icons">add</span>
               </div>
             </div>
-            <div class="asw-adjust-control">
-              <div class="asw-minus" data-key="letter-spacing" role="button" aria-pressed="false">
+            <div class="asw-adjust-control" data-key="letter-spacing">
+              <div class="asw-minus" role="button" aria-pressed="false">
                 <span class="material-icons">remove</span>
               </div>
               <div class="asw-control-label">
                 <span class="material-icons">format_letter_spacing</span>
                 <span class="asw-amount">100%</span>
               </div>
-              <div class="asw-plus" data-key="letter-spacing" role="button" aria-pressed="false">
+              <div class="asw-plus" role="button" aria-pressed="false">
                 <span class="material-icons">add</span>
               </div>
             </div>
@@ -118,9 +118,9 @@
               <div class="asw-btn asw-tools" role="button" aria-pressed="false" data-key="stop-animations">
                 <span class="material-icons">motion_photos_off</span>Stop Animations
               </div>
-              <div class="asw-btn asw-tools" role="button" aria-pressed="false" data-key="reading-guide">
-                <span class="material-icons">remove_red_eye</span>Reading Guide
-              </div>
+            </div>
+            <div class="asw-btn asw-tools asw-full-width" role="button" aria-pressed="false" data-key="reading-guide">
+              <span class="material-icons">remove_red_eye</span>Reading Guide
             </div>
           </div>
         </div>
@@ -131,6 +131,9 @@
         </div>
       </div>
       <div class="asw-overlay"></div>
+      <div class="asw-reading-guide-overlay" style="display: none;">
+        <div class="asw-reading-guide-bar"></div>
+      </div>
     `;
 
     return widget;
@@ -159,10 +162,11 @@
   function toggleMenu() {
     const menu = document.querySelector('.asw-menu');
     const overlay = document.querySelector('.asw-overlay');
-    const isVisible = menu.style.display === 'block';
+    const isVisible = menu.style.display === 'flex';
 
-    menu.style.display = isVisible ? 'none' : 'block';
+    menu.style.display = isVisible ? 'none' : 'flex';
     overlay.style.display = menu.style.display;
+    document.body.style.overflow = isVisible ? 'auto' : 'hidden';
   }
 
   // Close menu
@@ -172,6 +176,7 @@
 
     menu.style.display = 'none';
     overlay.style.display = 'none';
+    document.body.style.overflow = 'auto';
   }
 
   // Reset all settings
@@ -185,7 +190,9 @@
       btn.setAttribute('aria-pressed', 'false');
     });
 
-    document.querySelector('.asw-amount').textContent = 'Default';
+    document.querySelectorAll('.asw-amount').forEach(el => {
+      el.textContent = '100%';
+    });
 
     // Reset applied styles
     resetAppliedStyles();
@@ -214,6 +221,11 @@
       }
 
       applyContrast(states.contrast);
+    } else if (key === 'reading-guide') {
+      states[key] = !states[key];
+      button.classList.toggle('asw-selected', states[key]);
+      button.setAttribute('aria-pressed', states[key] ? 'true' : 'false');
+      toggleReadingGuide();
     } else {
       // Handle other toggleable settings
       states[key] = !states[key];
@@ -226,9 +238,10 @@
     saveSettings();
   }
 
+  // Adjust text property (font size, line height, letter spacing)
   function adjustTextProperty(event) {
     const button = event.currentTarget;
-    const key = button.dataset.key;
+    const key = button.closest('.asw-adjust-control').dataset.key;
     let value = parseFloat(states[key]) || 1;
 
     if (button.classList.contains('asw-minus')) {
@@ -237,13 +250,21 @@
       value += 0.1;
     }
 
-    value = Math.max(0.5, Math.min(value, 2));
+    // Limit values to reasonable ranges
+    if (key === 'font-size') {
+      value = Math.max(0.7, Math.min(value, 1.5));
+    } else if (key === 'line-height') {
+      value = Math.max(1, Math.min(value, 2));
+    } else if (key === 'letter-spacing') {
+      value = Math.max(0, Math.min(value, 0.3));
+    }
+
     value = parseFloat(value.toFixed(2));
 
     applyTextProperty(key, value);
 
-    const displayText = value === 1 ? '100%' : `${Math.round(value * 100)}%`;
-    button.parentElement.querySelector('.asw-amount').textContent = displayText;
+    const displayText = `${Math.round(value * 100)}%`;
+    button.closest('.asw-adjust-control').querySelector('.asw-amount').textContent = displayText;
     states[key] = value;
     saveSettings();
   }
@@ -260,51 +281,9 @@
         }
         element.style.fontSize = (originalSize * value) + 'px';
       } else if (property === 'line-height') {
-        element.style.lineHeight = value;
+        element.style.lineHeight = value.toString();
       } else if (property === 'letter-spacing') {
         element.style.letterSpacing = (value - 1) + 'em';
-      }
-    });
-  }
-
-
-  // Adjust font size
-  function adjustFontSize(event) {
-    const button = event.currentTarget;
-    let fontSize = parseFloat(states.fontSize) || 1;
-
-    if (button.classList.contains('asw-minus')) {
-      fontSize -= 0.1;
-    } else {
-      fontSize += 0.1;
-    }
-
-    fontSize = Math.max(0.1, Math.min(fontSize, 2));
-    fontSize = parseFloat(fontSize.toFixed(2));
-
-    applyFontSize(fontSize);
-
-    let displayText = 'Default';
-    if (fontSize !== 1) {
-      displayText = fontSize > 1 ? '+' : '-';
-      displayText += Math.abs(Math.round((fontSize - 1) * 100)) + '%';
-    }
-
-    document.querySelector('.asw-amount').textContent = displayText;
-    states.fontSize = fontSize;
-    saveSettings();
-  }
-
-  // Apply font size changes
-  function applyFontSize(size) {
-    document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, a, dl, dt, li, ol, th, td, span').forEach(element => {
-      if (!element.classList.contains('material-icons')) {
-        let originalSize = element.getAttribute('data-asw-orgFontSize');
-        if (!originalSize) {
-          originalSize = parseInt(window.getComputedStyle(element, null).getPropertyValue('font-size'));
-          element.setAttribute('data-asw-orgFontSize', originalSize);
-        }
-        element.style.fontSize = (originalSize * size) + 'px';
       }
     });
   }
@@ -346,14 +325,14 @@
   function applyContentAdjustments() {
     let style = '';
 
-    if (states['readable-font']) {
+    if (states['dyslexic-font']) {
       style += `
         @font-face {
           font-family: OpenDyslexic3;
           src: url("https://website-widgets.pages.dev/fonts/OpenDyslexic3-Regular.woff") format("woff"),
                url("https://website-widgets.pages.dev/fonts/OpenDyslexic3-Regular.ttf") format("truetype");
         }
-        .readable-font, .readable-font * {
+        body.dyslexic-font :not(.material-icons) {
           font-family: OpenDyslexic3, Comic Sans MS, Arial, Helvetica, sans-serif !important;
         }
       `;
@@ -362,7 +341,7 @@
     if (states['highlight-links']) {
       style += `
         .highlight-links a[href] {
-          outline: 2px solid #0048ff !important;
+          outline: 2px solid #fde2aa !important;
           outline-offset: 2px !important;
         }
       `;
@@ -372,7 +351,7 @@
       style += `
         .highlight-titles h1, .highlight-titles h2, .highlight-titles h3,
         .highlight-titles h4, .highlight-titles h5, .highlight-titles h6 {
-          outline: 2px solid #0048ff !important;
+          outline: 2px solid #fde2aa !important;
           outline-offset: 2px !important;
         }
       `;
@@ -395,16 +374,48 @@
       `;
     }
 
+    if (states['font-weight']) {
+      style += `
+        body.font-weight-bold :not(.material-icons) {
+          font-weight: bold !important;
+        }
+      `;
+    }
+
     applyStyle(style, 'asw-content-style');
     updateBodyClasses();
   }
 
   // Update body classes based on current states
   function updateBodyClasses() {
-    const classes = ['readable-font', 'highlight-links', 'highlight-titles', 'big-cursor', 'stop-animations'];
+    const classes = ['dyslexic-font', 'highlight-links', 'highlight-titles', 'big-cursor', 'stop-animations', 'font-weight-bold'];
     classes.forEach(className => {
       document.body.classList.toggle(className, !!states[className]);
     });
+  }
+
+  // Toggle reading guide
+  function toggleReadingGuide() {
+    const readingGuideOverlay = document.querySelector('.asw-reading-guide-overlay');
+    const isActive = readingGuideOverlay.style.display === 'block';
+    
+    readingGuideOverlay.style.display = isActive ? 'none' : 'block';
+    
+    if (!isActive) {
+      const bar = readingGuideOverlay.querySelector('.asw-reading-guide-bar');
+      
+      const moveBar = (e) => {
+        const y = e.clientY;
+        bar.style.top = `${Math.max(0, Math.min(y - bar.offsetHeight / 2, window.innerHeight - bar.offsetHeight))}px`;
+      };
+      
+      document.addEventListener('mousemove', moveBar);
+      
+      readingGuideOverlay.addEventListener('click', () => {
+        readingGuideOverlay.style.display = 'none';
+        document.removeEventListener('mousemove', moveBar);
+      });
+    }
   }
 
   // Apply a style to the document
@@ -422,8 +433,11 @@
   function resetAppliedStyles() {
     applyContrast(null);
     applyContentAdjustments();
-    applyFontSize(1);
+    applyTextProperty('font-size', 1);
+    applyTextProperty('line-height', 1);
+    applyTextProperty('letter-spacing', 1);
     updateBodyClasses();
+    document.querySelector('.asw-reading-guide-overlay').style.display = 'none';
   }
 
   // Load settings from localStorage
@@ -440,258 +454,290 @@
     localStorage.setItem('aswSettings', JSON.stringify(states));
   }
 
-// Apply loaded settings
-function applyLoadedSettings() {
-  if (states.fontSize) {
-    applyFontSize(states.fontSize);
-    updateFontSizeDisplay(states.fontSize);
+  // Apply loaded settings
+  function applyLoadedSettings() {
+    if (states['font-size']) {
+      applyTextProperty('font-size', states['font-size']);
+      updateTextPropertyDisplay('font-size', states['font-size']);
+    }
+
+    if (states['line-height']) {
+      applyTextProperty('line-height', states['line-height']);
+      updateTextPropertyDisplay('line-height', states['line-height']);
+    }
+
+    if (states['letter-spacing']) {
+      applyTextProperty('letter-spacing', states['letter-spacing']);
+      updateTextPropertyDisplay('letter-spacing', states['letter-spacing']);
+    }
+
+    if (states.contrast) {
+      applyContrast(states.contrast);
+      const contrastButton = document.querySelector(`.asw-filter[data-key="${states.contrast}"]`);
+      if (contrastButton) {
+        contrastButton.classList.add('asw-selected');
+        contrastButton.setAttribute('aria-pressed', 'true');
+      }
+    }
+
+    applyContentAdjustments();
+
+    // Update UI to reflect loaded settings
+    Object.keys(states).forEach(key => {
+      const button = document.querySelector(`.asw-btn[data-key="${key}"]`);
+      if (button && states[key]) {
+        button.classList.add('asw-selected');
+        button.setAttribute('aria-pressed', 'true');
+        if (key === 'reading-guide') {
+          toggleReadingGuide();
+        }
+      }
+    });
   }
 
-  if (states.contrast) {
-    applyContrast(states.contrast);
-    const contrastButton = document.querySelector(`.asw-filter[data-key="${states.contrast}"]`);
-    if (contrastButton) {
-      contrastButton.classList.add('asw-selected');
-      contrastButton.setAttribute('aria-pressed', 'true');
+  // Update text property display
+  function updateTextPropertyDisplay(property, value) {
+    const display = document.querySelector(`.asw-adjust-control[data-key="${property}"] .asw-amount`);
+    if (display) {
+      display.textContent = `${Math.round(value * 100)}%`;
     }
   }
 
-  applyContentAdjustments();
+  // Apply styles
+  function applyStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+      @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
 
-  // Update UI to reflect loaded settings
-  Object.keys(states).forEach(key => {
-    const button = document.querySelector(`.asw-btn[data-key="${key}"]`);
-    if (button && states[key]) {
-      button.classList.add('asw-selected');
-      button.setAttribute('aria-pressed', 'true');
-    }
-  });
-}
+      .asw-widget {
+        font-family: 'Nunito', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
 
-// Update font size display
-function updateFontSizeDisplay(size) {
-  const display = document.querySelector('.asw-amount');
-  if (display) {
-    if (size === 1) {
-      display.textContent = 'Default';
-    } else {
-      const percentage = Math.round((size - 1) * 100);
-      display.textContent = `${percentage > 0 ? '+' : ''}${percentage}%`;
-    }
-  }
-}
+      .asw-menu, .asw-menu-btn {
+        position: fixed;
+        left: 20px;
+        transition: 0.3s;
+        z-index: 500000;
+      }
 
-// Apply styles
-function applyStyles() {
-  const style = document.createElement('style');
-  style.textContent = `
-    @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
-    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+      .asw-menu-btn {
+        bottom: 20px;
+        background: #fde2aa !important;
+        box-shadow: 0 5px 15px 0 rgba(37, 44, 97, 0.15), 0 2px 4px 0 rgba(93, 100, 148, 0.2);
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        cursor: pointer;
+        border: none;
+      }
 
-    .asw-widget {
-      font-family: 'Nunito', sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
+      .asw-menu-btn:hover {
+        transform: scale(1.05);
+      }
 
-    .asw-menu, .asw-menu-btn {
-      position: fixed;
-      right: 20px;
-      transition: 0.3s;
-      z-index: 500000;
-    }
-
-    .asw-menu-btn {
-      bottom: 20px;
-      background: #FFD54F !important;
-      box-shadow: 0 5px 15px 0 rgba(37, 44, 97, 0.15), 0 2px 4px 0 rgba(93, 100, 148, 0.2);
-      border-radius: 50%;
-      align-items: center;
-      justify-content: center;
-      width: 80px;
-      height: 80px;
-      display: flex;
-      cursor: pointer;
-      border: none;
-    }
-
-    .asw-menu-btn:hover {
-      transform: scale(1.05);
-    }
-
-    .asw-menu {
-      display: none;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      border-radius: 8px 0 0 8px;
-      box-shadow: -1px 0 20px -14px #000;
-      background: #FFF9C4;
-      width: 400px;
-      max-width: 90vw;
-      line-height: 1;
-      font-size: 16px;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .asw-menu-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #FFD54F;
-      color: #333;
-      padding: 20px;
-      font-weight: 600;
-      font-size: 20px;
-    }
-
-    .asw-menu-header > div {
-      display: flex;
-    }
-
-    .asw-menu-header div[role="button"] {
-      padding: 8px;
-      cursor: pointer;
-    }
-
-    .asw-menu-content {
-      flex-grow: 1;
-      overflow-y: auto;
-      padding: 20px;
-    }
-
-    .asw-card {
-      margin-bottom: 30px;
-    }
-
-    .asw-card-title {
-      font-size: 22px;
-      margin-bottom: 20px;
-      font-weight: 600;
-      color: #333;
-    }
-
-    .asw-adjust-control {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      background: #FFF176;
-      padding: 15px;
-      border-radius: 8px;
-    }
-
-    .asw-control-label {
-      display: flex;
-      align-items: center;
-      font-weight: 600;
-    }
-
-    .asw-control-label .material-icons {
-      margin-right: 10px;
-    }
-
-    .asw-adjust-control div[role="button"] {
-      background: #FFD54F;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #333;
-      cursor: pointer;
-    }
-
-    .asw-items {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-    }
-
-    .asw-btn {
-      width: 100%;
-      height: 120px;
-      border-radius: 8px;
-      padding: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      text-align: center;
-      color: #333;
-      background: #FFF176;
-      border: 2px solid #FFF176;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .asw-btn .material-icons {
-      margin-bottom: 10px;
-      font-size: 32px;
-    }
-
-    .asw-btn:hover {
-      border-color: #FFD54F;
-    }
-
-    .asw-btn.asw-selected {
-      background: #FFD54F;
-      color: #333;
-      border-color: #FFD54F;
-    }
-
-    .asw-divider {
-      height: 2px;
-      background: #FFD54F;
-      margin: 30px 0;
-    }
-
-    .asw-footer {
-      background: #FFD54F;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .asw-footer a {
-      color: #333;
-      text-decoration: none;
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .asw-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 499999;
-      display: none;
-    }
-
-    @media only screen and (max-width: 480px) {
       .asw-menu {
-        width: 100%;
-        max-width: 100%;
-        border-radius: 0;
+        display: none;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        border-radius: 0 8px 8px 0;
+        box-shadow: 1px 0 20px -14px #000;
+        background: #ffffff;
+        width: 33vw;
+        min-width: 350px;
+        max-width: calc(100vw - 40px);
+        line-height: 1;
+        font-size: 16px;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .asw-menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fde2aa;
+        color: #333;
+        padding: 20px;
+        font-weight: 600;
+        font-size: 20px;
+      }
+
+      .asw-menu-header > div {
+        display: flex;
+      }
+
+      .asw-menu-header div[role="button"] {
+        padding: 8px;
+        cursor: pointer;
+      }
+
+      .asw-menu-content {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      .asw-card {
+        margin-bottom: 30px;
+      }
+
+      .asw-card-title {
+        font-size: 22px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .asw-adjust-control {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #fde2aa;
+      }
+
+      .asw-control-label {
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+      }
+
+      .asw-control-label .material-icons {
+        margin-right: 10px;
+      }
+
+      .asw-adjust-control div[role="button"] {
+        background: #fde2aa;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        cursor: pointer;
       }
 
       .asw-items {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
       }
-    }
-  `;
-  document.head.appendChild(style);
-}
 
-// Initialize variables
-let states = {};
+      .asw-btn {
+        width: 100%;
+        height: 120px;
+        border-radius: 8px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        color: #333;
+        background: #fffaf0;
+        border: 2px solid #fde2aa;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-weight: 600;
+      }
 
-// Initialize the widget
-initAccessibilityWidget();
+      .asw-btn .material-icons {
+        margin-bottom: 10px;
+        font-size: 32px;
+      }
+
+      .asw-btn:hover {
+        background: #fff5e6;
+      }
+
+      .asw-btn.asw-selected {
+        background: #fde2aa;
+        color: #333;
+      }
+
+      .asw-divider {
+        height: 2px;
+        background: #fde2aa;
+        margin: 30px 0;
+      }
+
+      .asw-footer {
+        background: #fde2aa;
+        padding: 40px;
+        text-align: center;
+      }
+
+      .asw-footer a {
+        color: #333;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .asw-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 499999;
+        display: none;
+      }
+
+      .asw-full-width {
+        grid-column: 1 / -1;
+      }
+
+      .asw-reading-guide-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 499998;
+        display: none;
+      }
+
+      .asw-reading-guide-bar {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: transparent;
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+      }
+
+      @media only screen and (max-width: 768px) {
+        .asw-menu {
+          width: calc(100% - 40px);
+          min-width: unset;
+        }
+
+        .asw-items {
+          grid-template-columns: 1fr;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Initialize variables
+  let states = {};
+
+  // Initialize the widget
+  initAccessibilityWidget();
 })();
