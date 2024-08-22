@@ -271,26 +271,68 @@
     localStorage.setItem("aswSettings", JSON.stringify(settings));
   }
 
-  // Initializes the widget and restores settings from local storage
-  (function initWidget() {
-    const widget = (function createWidget() {
-      const div = document.createElement("div");
-      div.classList.add("asw-widget");
-      div.innerHTML = `
-        <button class="asw-menu-btn" aria-label="Toggle Accessibility Menu">
-          <span class="material-icons">accessibility_new</span>
-        </button>
-        <div class="asw-menu" style="display: none;">
-          <!-- Menu content -->
+  // Creates the widget HTML structure
+  function createWidgetHTML() {
+    return `
+      <button class="asw-menu-btn" aria-label="Toggle Accessibility Menu">
+        <span class="material-icons">accessibility_new</span>
+      </button>
+      <div class="asw-menu" style="display: none;">
+        <button class="asw-menu-close" aria-label="Close Accessibility Menu">&times;</button>
+        <h2>Accessibility Options</h2>
+        <div class="asw-option-group">
+          <h3>Text Adjustments</h3>
+          <div class="asw-adjust-control" data-key="font-size">
+            <span>Font Size</span>
+            <div role="button" class="asw-minus" aria-label="Decrease Font Size">-</div>
+            <span class="asw-amount">100%</span>
+            <div role="button" class="asw-plus" aria-label="Increase Font Size">+</div>
+          </div>
+          <div class="asw-adjust-control" data-key="line-height">
+            <span>Line Height</span>
+            <div role="button" class="asw-minus" aria-label="Decrease Line Height">-</div>
+            <span class="asw-amount">100%</span>
+            <div role="button" class="asw-plus" aria-label="Increase Line Height">+</div>
+          </div>
+          <div class="asw-adjust-control" data-key="letter-spacing">
+            <span>Letter Spacing</span>
+            <div role="button" class="asw-minus" aria-label="Decrease Letter Spacing">-</div>
+            <span class="asw-amount">0%</span>
+            <div role="button" class="asw-plus" aria-label="Increase Letter Spacing">+</div>
+          </div>
         </div>
-        <div class="asw-overlay"></div>
-        <div class="asw-reading-guide-overlay" style="display: none;">
-          <div class="asw-reading-guide-bar"></div>
+        <div class="asw-option-group">
+          <h3>Color Adjustments</h3>
+          <button class="asw-btn asw-filter" data-key="dark-contrast">Dark Contrast</button>
+          <button class="asw-btn asw-filter" data-key="light-contrast">Light Contrast</button>
+          <button class="asw-btn asw-filter" data-key="high-contrast">High Contrast</button>
+          <button class="asw-btn asw-filter" data-key="monochrome">Monochrome</button>
         </div>
-      `;
-      return div;
-    })();
+        <div class="asw-option-group">
+          <h3>Additional Options</h3>
+          <button class="asw-btn" data-key="dyslexic-font">Dyslexic Font</button>
+          <button class="asw-btn" data-key="highlight-links">Highlight Links</button>
+          <button class="asw-btn" data-key="highlight-titles">Highlight Titles</button>
+          <button class="asw-btn" data-key="big-cursor">Big Cursor</button>
+          <button class="asw-btn" data-key="stop-animations">Stop Animations</button>
+          <button class="asw-btn" data-key="reading-guide">Reading Guide</button>
+          <button class="asw-btn" data-key="font-weight">Bold Text</button>
+        </div>
+        <button class="asw-menu-reset">Reset All</button>
+        <div class="asw-menu-footer">Provided by Brightways Accessibility</div>
+      </div>
+      <div class="asw-overlay"></div>
+      <div class="asw-reading-guide-overlay" style="display: none;">
+        <div class="asw-reading-guide-bar"></div>
+      </div>
+    `;
+  }
 
+  // Initializes the widget and restores settings from local storage
+  function initWidget() {
+    const widget = document.createElement("div");
+    widget.classList.add("asw-widget");
+    widget.innerHTML = createWidgetHTML();
     document.body.appendChild(widget);
 
     // Restore settings from local storage
@@ -307,7 +349,7 @@
 
     // Apply initial styles
     applyStyles();
-  })();
+  }
 
   // Apply saved settings to the widget and document
   function applySavedSettings() {
@@ -369,4 +411,11 @@
   }
 
   let settings = {};
+
+  // Initialize the widget when the DOM is fully loaded
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initWidget);
+  } else {
+    initWidget();
+  }
 })();
