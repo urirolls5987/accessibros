@@ -37,7 +37,7 @@
     applyStyles();
     updateTextAdjustments("font-size", 1);
     updateTextAdjustments("line-height", 1);
-    updateTextAdjustments("letter-spacing", 1);
+    updateTextAdjustments("letter-spacing", 0);
     updateBodyClasses();
     document.querySelector(".asw-reading-guide-overlay").style.display = "none";
 
@@ -81,18 +81,27 @@
   function handleAdjustment(event) {
     const control = event.currentTarget;
     const key = control.dataset.key;
-    let value = parseFloat(settings[key]) || 1;
+    let value = parseFloat(settings[key]) || (key === "letter-spacing" ? 0 : 1);
 
-    value += control.classList.contains("asw-minus") ? -0.1 : 0.1;
-    value = Math.max(0.7, Math.min(value, 1.5));
+    const step = key === "letter-spacing" ? 0.05 : 0.1;
+    value += control.classList.contains("asw-minus") ? -step : step;
+    
+    // Set reasonable limits for each property
+    const limits = {
+      "font-size": { min: 0.8, max: 1.5 },
+      "line-height": { min: 1, max: 2 },
+      "letter-spacing": { min: -0.1, max: 0.5 }
+    };
+    
+    value = Math.max(limits[key].min, Math.min(value, limits[key].max));
     value = parseFloat(value.toFixed(2));
 
     updateTextAdjustments(key, value);
 
-    const percentage = `${Math.round(100 * value)}%`;
-    control
-      .closest(".asw-adjust-control")
-      .querySelector(".asw-amount").textContent = percentage;
+    const percentage = key === "letter-spacing" 
+      ? `${value > 0 ? "+" : ""}${Math.round(value * 100)}%`
+      : `${Math.round(100 * value)}%`;
+    control.closest(".asw-adjust-control").querySelector(".asw-amount").textContent = percentage;
 
     settings[key] = value;
     saveSettings();
@@ -100,24 +109,20 @@
 
   // Updates text adjustments like font-size, line-height, letter-spacing
   function updateTextAdjustments(key, value) {
-    document
-      .querySelectorAll("body :not(.asw-widget):not(.asw-widget *)")
-      .forEach((element) => {
-        if (key === "font-size") {
-          let originalSize = element.getAttribute("data-asw-orgFontSize");
-          if (!originalSize) {
-            originalSize = parseInt(
-              window.getComputedStyle(element).getPropertyValue("font-size")
-            );
-            element.setAttribute("data-asw-orgFontSize", originalSize);
-          }
-          element.style.fontSize = originalSize * value + "px";
-        } else if (key === "line-height") {
-          element.style.lineHeight = value;
-        } else if (key === "letter-spacing") {
-          element.style.letterSpacing = (value - 1) + "em";
+    document.querySelectorAll("body :not(.asw-widget):not(.asw-widget *)").forEach((element) => {
+      if (key === "font-size") {
+        let originalSize = element.getAttribute("data-asw-orgFontSize");
+        if (!originalSize) {
+          originalSize = parseFloat(window.getComputedStyle(element).getPropertyValue("font-size"));
+          element.setAttribute("data-asw-orgFontSize", originalSize);
         }
-      });
+        element.style.fontSize = originalSize * value + "px";
+      } else if (key === "line-height") {
+        element.style.lineHeight = value;
+      } else if (key === "letter-spacing") {
+        element.style.letterSpacing = value + "em";
+      }
+    });
   }
 
   // Applies the selected filter (contrast, monochrome, etc.)
@@ -128,35 +133,20 @@
       let filterStyle = "";
       switch (filter) {
         case "dark-contrast":
-          filterStyle =
-            "color: #fff !important; background-color: #000 !important;";
+          filterStyle = "color: #fff !important; background-color: #000 !important;";
           break;
         case "light-contrast":
-          filterStyle =
-            "color: #000 !important; background-color: #FFF !important;";
+          filterStyle = "color: #000 !important; background-color: #FFF !important;";
           break;
         case "high-contrast":
-          filterStyle =
-            "-webkit-filter: contrast(125%); filter: contrast(125%);";
+          filterStyle = "-webkit-filter: contrast(125%); filter: contrast(125%);";
           break;
         case "monochrome":
-          filterStyle =
-            "-webkit-filter: grayscale(100%); filter: grayscale(100%);";
+          filterStyle = "-webkit-filter: grayscale(100%); filter: grayscale(100%);";
           break;
       }
 
-      const elements = [
-        "h1",
-        "h2",
-        "h3",
-        "img",
-        "p",
-        "a",
-        "button",
-        "label",
-        "li",
-        "ol",
-      ];
+      const elements = ["h1", "h2", "h3", "img", "p", "a", "button", "label", "li", "ol"];
       elements.forEach((element) => {
         css += `[data-asw-filter="${filter}"] ${element} { ${filterStyle} }`;
       });
@@ -193,7 +183,8 @@
 
     if (settings["highlight-titles"]) {
       css += `
-        .highlight-titles h1, h2, h3, h4, h5, h6 {
+        .highlight-titles h1, .highlight-titles h2, .highlight-titles h3, 
+        .highlight-titles h4, .highlight-titles h5, .highlight-titles h6 {
           outline: 2px solid #fde2aa !important;
         }
       `;
@@ -216,13 +207,19 @@
       `;
     }
 
-    if (settings["font-weight-bold"]) {
+    if (settings["font-weight"]) {
       css += `
-        body.font-weight-bold {
+        body.font-weight-bold * {
           font-weight: bold !important;
         }
       `;
     }
+
+    css += `
+      .asw-widget .asw-menu-footer {
+        font-weight: bold;
+      }
+    `;
 
     updateStyles(css, "asw-content-style");
     updateBodyClasses();
@@ -230,14 +227,7 @@
 
   // Toggles specific body classes based on settings
   function updateBodyClasses() {
-    const features = [
-      "dyslexic-font",
-      "highlight-links",
-      "highlight-titles",
-      "big-cursor",
-      "stop-animations",
-      "font-weight-bold",
-    ];
+    const features = ["dyslexic-font", "highlight-links", "highlight-titles", "big-cursor", "stop-animations", "font-weight-bold"];
     features.forEach((feature) => {
       document.body.classList.toggle(feature, !!settings[feature]);
     });
@@ -252,10 +242,16 @@
 
     if (!isVisible) {
       const guideBar = overlay.querySelector(".asw-reading-guide-bar");
-      document.addEventListener("mousemove", (e) => {
-        const y = e.clientY;
-        guideBar.style.top = `${y}px`;
-      });
+      guideBar.style.top = "50%";
+
+      const moveGuide = (event) => {
+        const topPosition = Math.max(0, Math.min(event.clientY - guideBar.offsetHeight / 2, window.innerHeight - guideBar.offsetHeight));
+        guideBar.style.top = `${topPosition}px`;
+      };
+
+      document.addEventListener("mousemove", moveGuide);
+    } else {
+      document.removeEventListener("mousemove", moveGuide);
     }
   }
 
@@ -302,10 +298,15 @@
     if (savedSettings) {
       settings = JSON.parse(savedSettings);
       applySavedSettings();
+    } else {
+      settings = {}; // Initialize with empty settings if nothing is saved
     }
 
     // Set up event listeners
     setupEventListeners();
+
+    // Apply initial styles
+    applyStyles();
   })();
 
   // Apply saved settings to the widget and document
@@ -325,6 +326,28 @@
     }
 
     applyStyles();
+
+    // Update button states
+    document.querySelectorAll(".asw-btn").forEach((btn) => {
+      const key = btn.dataset.key;
+      if (settings[key]) {
+        btn.classList.add("asw-selected");
+        btn.setAttribute("aria-pressed", "true");
+      }
+    });
+
+    // Update adjustment control values
+    ["font-size", "line-height", "letter-spacing"].forEach((key) => {
+      if (settings[key]) {
+        const control = document.querySelector(`.asw-adjust-control[data-key="${key}"]`);
+        if (control) {
+          const percentage = key === "letter-spacing" 
+            ? `${settings[key] > 0 ? "+" : ""}${Math.round(settings[key] * 100)}%`
+            : `${Math.round(100 * settings[key])}%`;
+          control.querySelector(".asw-amount").textContent = percentage;
+        }
+      }
+    });
   }
 
   // Set up all necessary event listeners
@@ -334,9 +357,7 @@
     const resetButton = document.querySelector(".asw-menu-reset");
     const overlay = document.querySelector(".asw-overlay");
     const buttons = document.querySelectorAll(".asw-btn");
-    const adjustmentControls = document.querySelectorAll(
-      '.asw-adjust-control div[role="button"]'
-    );
+    const adjustmentControls = document.querySelectorAll('.asw-adjust-control div[role="button"]');
 
     menuButton.addEventListener("click", toggleMenu);
     closeButton.addEventListener("click", closeMenu);
@@ -344,9 +365,7 @@
     resetButton.addEventListener("click", resetSettings);
 
     buttons.forEach((btn) => btn.addEventListener("click", handleButtonClick));
-    adjustmentControls.forEach((control) =>
-      control.addEventListener("click", handleAdjustment)
-    );
+    adjustmentControls.forEach((control) => control.addEventListener("click", handleAdjustment));
   }
 
   let settings = {};
