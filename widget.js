@@ -1,205 +1,393 @@
-!(function () {
-  // Toggles the accessibility menu and overlay display
-  function toggleMenu() {
-    const menu = document.querySelector(".asw-menu");
-    const overlay = document.querySelector(".asw-overlay");
-    const isMenuVisible = menu.style.display === "flex";
+// Enhanced Accessibility Widget Script
 
-    menu.style.display = isMenuVisible ? "none" : "flex";
-    overlay.style.display = menu.style.display;
-    document.body.style.overflow = isMenuVisible ? "auto" : "hidden";
-  }
+(function () {
+  // Initialize the widget
+  function initAccessibilityWidget() {
+    const widget = createWidgetElement();
+    document.body.appendChild(widget);
 
-  // Closes the accessibility menu and overlay
-  function closeMenu() {
-    const menu = document.querySelector(".asw-menu");
-    const overlay = document.querySelector(".asw-overlay");
+    // Load saved settings
+    loadSettings();
 
-    menu.style.display = "none";
-    overlay.style.display = "none";
-    document.body.style.overflow = "auto";
-  }
-
-  // Resets the accessibility settings to defaults
-  function resetSettings() {
-    settings = {};
-
-    document.querySelectorAll(".asw-btn").forEach((btn) => {
-      btn.classList.remove("asw-selected");
-      btn.setAttribute("aria-pressed", "false");
-    });
-
-    document.querySelectorAll(".asw-amount").forEach((amount) => {
-      amount.textContent = "100%";
-    });
-
-    applyFilter(null);
+    // Apply initial styles
     applyStyles();
-    updateTextAdjustments("font-size", 1);
-    updateTextAdjustments("line-height", 1);
-    updateTextAdjustments("letter-spacing", 0);
-    updateBodyClasses();
-    document.querySelector(".asw-reading-guide-overlay").style.display = "none";
 
+    // Add event listeners
+    addEventListeners();
+  }
+
+  // Create the widget element
+  function createWidgetElement() {
+    const widget = document.createElement("div");
+    widget.classList.add("asw-widget");
+    widget.innerHTML = `
+      <button class="asw-menu-btn" aria-label="Toggle Accessibility Menu">
+        <span class="material-icons md-36 white">accessibility_new</span>
+      </button>
+      <div class="asw-menu" style="display: none;">
+        <div class="asw-menu-header">
+          Accessibility Options
+          <div>
+            <div role="button" class="asw-menu-reset" title="Reset Settings">
+              <span class="material-icons">restart_alt</span>
+            </div>
+            <div role="button" class="asw-menu-close" title="Close Accessibility Menu">
+              <span class="material-icons">close</span>
+            </div>
+          </div>
+        </div>
+        <div class="asw-menu-content">
+          <div class="asw-card">
+            <div class="asw-card-title">Text Adjustments</div>
+            <div class="asw-adjust-control">
+              <div class="asw-minus" data-key="font-size" role="button" aria-pressed="false">
+                <span class="material-icons">remove</span>
+              </div>
+              <div class="asw-control-label">
+                <span class="material-icons">format_size</span>
+                <span class="asw-amount">100%</span>
+              </div>
+              <div class="asw-plus" data-key="font-size" role="button" aria-pressed="false">
+                <span class="material-icons">add</span>
+              </div>
+            </div>
+            <div class="asw-adjust-control">
+              <div class="asw-minus" data-key="line-height" role="button" aria-pressed="false">
+                <span class="material-icons">remove</span>
+              </div>
+              <div class="asw-control-label">
+                <span class="material-icons">format_line_spacing</span>
+                <span class="asw-amount">100%</span>
+              </div>
+              <div class="asw-plus" data-key="line-height" role="button" aria-pressed="false">
+                <span class="material-icons">add</span>
+              </div>
+            </div>
+            <div class="asw-adjust-control">
+              <div class="asw-minus" data-key="letter-spacing" role="button" aria-pressed="false">
+                <span class="material-icons">remove</span>
+              </div>
+              <div class="asw-control-label">
+                <span class="material-icons">format_letter_spacing</span>
+                <span class="asw-amount">100%</span>
+              </div>
+              <div class="asw-plus" data-key="letter-spacing" role="button" aria-pressed="false">
+                <span class="material-icons">add</span>
+              </div>
+            </div>
+            <div class="asw-items">
+              <div class="asw-btn" role="button" aria-pressed="false" data-key="dyslexic-font">
+                <span class="material-icons">spellcheck</span>Dyslexic Font
+              </div>
+              <div class="asw-btn" role="button" aria-pressed="false" data-key="font-weight">
+                <span class="material-icons">format_bold</span>Bold Text
+              </div>
+              <div class="asw-btn" role="button" aria-pressed="false" data-key="highlight-links">
+                <span class="material-icons">link</span>Highlight Links
+              </div>
+              <div class="asw-btn" role="button" aria-pressed="false" data-key="highlight-titles">
+                <span class="material-icons">title</span>Highlight Titles
+              </div>
+            </div>
+          </div>
+          <div class="asw-divider"></div>
+          <div class="asw-card">
+            <div class="asw-card-title">Color Adjustments</div>
+            <div class="asw-items">
+              <div class="asw-btn asw-filter" role="button" aria-pressed="false" data-key="monochrome">
+                <span class="material-icons">filter_b_and_w</span>Monochrome
+              </div>
+              <div class="asw-btn asw-filter" role="button" aria-pressed="false" data-key="high-contrast">
+                <span class="material-icons">contrast</span>High Contrast
+              </div>
+              <div class="asw-btn asw-filter" role="button" aria-pressed="false" data-key="light-contrast">
+                <span class="material-icons">brightness_5</span>Light Contrast
+              </div>
+              <div class="asw-btn asw-filter" role="button" aria-pressed="false" data-key="dark-contrast">
+                <span class="material-icons">nightlight</span>Dark Contrast
+              </div>
+            </div>
+          </div>
+          <div class="asw-divider"></div>
+          <div class="asw-card">
+            <div class="asw-card-title">Tools</div>
+            <div class="asw-items">
+              <div class="asw-btn asw-tools" role="button" aria-pressed="false" data-key="big-cursor">
+                <span class="material-icons">mouse</span>Big Cursor
+              </div>
+              <div class="asw-btn asw-tools" role="button" aria-pressed="false" data-key="stop-animations">
+                <span class="material-icons">motion_photos_off</span>Stop Animations
+              </div>
+              <div class="asw-btn asw-tools" role="button" aria-pressed="false" data-key="reading-guide">
+                <span class="material-icons">remove_red_eye</span>Reading Guide
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="asw-footer">
+          <a href="https://www.brightwaysaccess.com/" target="_blank" rel="noopener noreferrer">
+            Provided by Brightways Accessibility
+          </a>
+        </div>
+      </div>
+      <div class="asw-overlay"></div>
+    `;
+
+    return widget;
+  }
+
+  // Add event listeners to widget elements
+  function addEventListeners() {
+    const menuBtn = document.querySelector('.asw-menu-btn');
+    const menu = document.querySelector('.asw-menu');
+    const closeBtn = document.querySelector('.asw-menu-close');
+    const resetBtn = document.querySelector('.asw-menu-reset');
+    const overlay = document.querySelector('.asw-overlay');
+    const buttons = document.querySelectorAll('.asw-btn');
+    const adjustControls = document.querySelectorAll('.asw-adjust-control div[role="button"]');
+
+    menuBtn.addEventListener('click', toggleMenu);
+    closeBtn.addEventListener('click', closeMenu);
+    overlay.addEventListener('click', closeMenu);
+    resetBtn.addEventListener('click', resetSettings);
+
+    buttons.forEach(btn => btn.addEventListener('click', toggleSetting));
+    adjustControls.forEach(btn => btn.addEventListener('click', adjustTextProperty));
+  }
+
+  // Toggle menu visibility
+  function toggleMenu() {
+    const menu = document.querySelector('.asw-menu');
+    const overlay = document.querySelector('.asw-overlay');
+    const isVisible = menu.style.display === 'block';
+
+    menu.style.display = isVisible ? 'none' : 'block';
+    overlay.style.display = menu.style.display;
+  }
+
+  // Close menu
+  function closeMenu() {
+    const menu = document.querySelector('.asw-menu');
+    const overlay = document.querySelector('.asw-overlay');
+
+    menu.style.display = 'none';
+    overlay.style.display = 'none';
+  }
+
+  // Reset all settings
+  function resetSettings() {
+    // Reset all states
+    states = {};
+
+    // Reset UI
+    document.querySelectorAll('.asw-btn').forEach(btn => {
+      btn.classList.remove('asw-selected');
+      btn.setAttribute('aria-pressed', 'false');
+    });
+
+    document.querySelector('.asw-amount').textContent = 'Default';
+
+    // Reset applied styles
+    resetAppliedStyles();
+
+    // Save settings
     saveSettings();
   }
 
-  // Handles button click events for accessibility features
-  function handleButtonClick(event) {
-    const btn = event.currentTarget;
-    const key = btn.dataset.key;
+  // Toggle individual setting
+  function toggleSetting(event) {
+    const button = event.currentTarget;
+    const key = button.dataset.key;
 
-    if (btn.classList.contains("asw-filter")) {
-      document.querySelectorAll(".asw-filter").forEach((filterBtn) => {
-        filterBtn.classList.remove("asw-selected");
-        filterBtn.setAttribute("aria-pressed", "false");
+    if (button.classList.contains('asw-filter')) {
+      // Handle filter buttons (only one can be active at a time)
+      document.querySelectorAll('.asw-filter').forEach(btn => {
+        btn.classList.remove('asw-selected');
+        btn.setAttribute('aria-pressed', 'false');
       });
 
-      settings.contrast = settings.contrast !== key ? key : null;
-      if (settings.contrast) {
-        btn.classList.add("asw-selected");
-        btn.setAttribute("aria-pressed", "true");
+      states.contrast = states.contrast !== key ? key : null;
+      
+      if (states.contrast) {
+        button.classList.add('asw-selected');
+        button.setAttribute('aria-pressed', 'true');
       }
 
-      applyFilter(settings.contrast);
-    } else if (key === "reading-guide") {
-      settings[key] = !settings[key];
-      btn.classList.toggle("asw-selected", settings[key]);
-      btn.setAttribute("aria-pressed", settings[key] ? "true" : "false");
-      toggleReadingGuide();
+      applyContrast(states.contrast);
     } else {
-      settings[key] = !settings[key];
-      btn.classList.toggle("asw-selected", settings[key]);
-      btn.setAttribute("aria-pressed", settings[key] ? "true" : "false");
-      applyStyles();
+      // Handle other toggleable settings
+      states[key] = !states[key];
+      button.classList.toggle('asw-selected', states[key]);
+      button.setAttribute('aria-pressed', states[key] ? 'true' : 'false');
+      
+      applyContentAdjustments();
     }
 
     saveSettings();
   }
 
-  // Handles adjustments for font-size, line-height, letter-spacing
-  function handleAdjustment(event) {
-    const control = event.currentTarget;
-    const key = control.dataset.key;
-    let value = parseFloat(settings[key]) || (key === "letter-spacing" ? 0 : 1);
+  function adjustTextProperty(event) {
+    const button = event.currentTarget;
+    const key = button.dataset.key;
+    let value = parseFloat(states[key]) || 1;
 
-    const step = key === "letter-spacing" ? 0.05 : 0.1;
-    value += control.classList.contains("asw-minus") ? -step : step;
-    
-    // Set reasonable limits for each property
-    const limits = {
-      "font-size": { min: 0.8, max: 1.5 },
-      "line-height": { min: 1, max: 2 },
-      "letter-spacing": { min: -0.1, max: 0.5 }
-    };
-    
-    value = Math.max(limits[key].min, Math.min(value, limits[key].max));
+    if (button.classList.contains('asw-minus')) {
+      value -= 0.1;
+    } else {
+      value += 0.1;
+    }
+
+    value = Math.max(0.5, Math.min(value, 2));
     value = parseFloat(value.toFixed(2));
 
-    updateTextAdjustments(key, value);
+    applyTextProperty(key, value);
 
-    const percentage = key === "letter-spacing" 
-      ? `${value > 0 ? "+" : ""}${Math.round(value * 100)}%`
-      : `${Math.round(100 * value)}%`;
-    control.closest(".asw-adjust-control").querySelector(".asw-amount").textContent = percentage;
-
-    settings[key] = value;
+    const displayText = value === 1 ? '100%' : `${Math.round(value * 100)}%`;
+    button.parentElement.querySelector('.asw-amount').textContent = displayText;
+    states[key] = value;
     saveSettings();
   }
 
-  // Updates text adjustments like font-size, line-height, letter-spacing
-  function updateTextAdjustments(key, value) {
-    document.querySelectorAll("body :not(.asw-widget):not(.asw-widget *)").forEach((element) => {
-      if (key === "font-size") {
-        let originalSize = element.getAttribute("data-asw-orgFontSize");
+  // Apply text property changes
+  function applyTextProperty(property, value) {
+    const elements = document.querySelectorAll('body :not(.asw-widget):not(.asw-widget *)');
+    elements.forEach(element => {
+      if (property === 'font-size') {
+        let originalSize = element.getAttribute('data-asw-orgFontSize');
         if (!originalSize) {
-          originalSize = parseFloat(window.getComputedStyle(element).getPropertyValue("font-size"));
-          element.setAttribute("data-asw-orgFontSize", originalSize);
+          originalSize = parseInt(window.getComputedStyle(element, null).getPropertyValue('font-size'));
+          element.setAttribute('data-asw-orgFontSize', originalSize);
         }
-        element.style.fontSize = originalSize * value + "px";
-      } else if (key === "line-height") {
+        element.style.fontSize = (originalSize * value) + 'px';
+      } else if (property === 'line-height') {
         element.style.lineHeight = value;
-      } else if (key === "letter-spacing") {
-        element.style.letterSpacing = value + "em";
+      } else if (property === 'letter-spacing') {
+        element.style.letterSpacing = (value - 1) + 'em';
       }
     });
   }
 
-  // Applies the selected filter (contrast, monochrome, etc.)
-  function applyFilter(filter) {
-    let css = "";
 
-    if (filter) {
-      let filterStyle = "";
-      switch (filter) {
-        case "dark-contrast":
-          filterStyle = "color: #fff !important; background-color: #000 !important;";
+  // Adjust font size
+  function adjustFontSize(event) {
+    const button = event.currentTarget;
+    let fontSize = parseFloat(states.fontSize) || 1;
+
+    if (button.classList.contains('asw-minus')) {
+      fontSize -= 0.1;
+    } else {
+      fontSize += 0.1;
+    }
+
+    fontSize = Math.max(0.1, Math.min(fontSize, 2));
+    fontSize = parseFloat(fontSize.toFixed(2));
+
+    applyFontSize(fontSize);
+
+    let displayText = 'Default';
+    if (fontSize !== 1) {
+      displayText = fontSize > 1 ? '+' : '-';
+      displayText += Math.abs(Math.round((fontSize - 1) * 100)) + '%';
+    }
+
+    document.querySelector('.asw-amount').textContent = displayText;
+    states.fontSize = fontSize;
+    saveSettings();
+  }
+
+  // Apply font size changes
+  function applyFontSize(size) {
+    document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, a, dl, dt, li, ol, th, td, span').forEach(element => {
+      if (!element.classList.contains('material-icons')) {
+        let originalSize = element.getAttribute('data-asw-orgFontSize');
+        if (!originalSize) {
+          originalSize = parseInt(window.getComputedStyle(element, null).getPropertyValue('font-size'));
+          element.setAttribute('data-asw-orgFontSize', originalSize);
+        }
+        element.style.fontSize = (originalSize * size) + 'px';
+      }
+    });
+  }
+
+  // Apply contrast changes
+  function applyContrast(contrastType) {
+    let style = '';
+    if (contrastType) {
+      let filterStyle = '';
+      switch (contrastType) {
+        case 'dark-contrast':
+          filterStyle = 'color: #fff !important; fill: #FFF !important; background-color: #000 !important;';
           break;
-        case "light-contrast":
-          filterStyle = "color: #000 !important; background-color: #FFF !important;";
+        case 'light-contrast':
+          filterStyle = 'color: #000 !important; fill: #000 !important; background-color: #FFF !important;';
           break;
-        case "high-contrast":
-          filterStyle = "-webkit-filter: contrast(125%); filter: contrast(125%);";
+        case 'high-contrast':
+          filterStyle = '-webkit-filter: contrast(125%); filter: contrast(125%);';
           break;
-        case "monochrome":
-          filterStyle = "-webkit-filter: grayscale(100%); filter: grayscale(100%);";
+        case 'monochrome':
+          filterStyle = '-webkit-filter: grayscale(100%); filter: grayscale(100%);';
           break;
       }
 
-      const elements = ["h1", "h2", "h3", "img", "p", "a", "button", "label", "li", "ol"];
-      elements.forEach((element) => {
-        css += `[data-asw-filter="${filter}"] ${element} { ${filterStyle} }`;
+      const selectors = (contrastType === 'dark-contrast' || contrastType === 'light-contrast') 
+        ? ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img', 'p', 'i', 'svg', 'a', 'button', 'label', 'li', 'ol']
+        : [''];
+
+      selectors.forEach(selector => {
+        style += `[data-asw-filter="${contrastType}"] ${selector} { ${filterStyle} }`;
       });
     }
 
-    updateStyles(css, "asw-filter-style");
-    document.documentElement.setAttribute("data-asw-filter", filter || "");
+    applyStyle(style, 'asw-filter-style');
+    document.documentElement.setAttribute('data-asw-filter', contrastType || '');
   }
 
-  // Applies additional styles based on user preferences
-  function applyStyles() {
-    let css = "";
+  // Apply content adjustments
+  function applyContentAdjustments() {
+    let style = '';
 
-    if (settings["dyslexic-font"]) {
-      css += `
+    if (states['readable-font']) {
+      style += `
         @font-face {
           font-family: OpenDyslexic3;
           src: url("https://website-widgets.pages.dev/fonts/OpenDyslexic3-Regular.woff") format("woff"),
                url("https://website-widgets.pages.dev/fonts/OpenDyslexic3-Regular.ttf") format("truetype");
         }
-        body.dyslexic-font {
-          font-family: OpenDyslexic3, Comic Sans MS, Arial, sans-serif !important;
+        .readable-font, .readable-font * {
+          font-family: OpenDyslexic3, Comic Sans MS, Arial, Helvetica, sans-serif !important;
         }
       `;
     }
 
-    if (settings["highlight-links"]) {
-      css += `
+    if (states['highlight-links']) {
+      style += `
         .highlight-links a[href] {
-          outline: 2px solid #fde2aa !important;
+          outline: 2px solid #0048ff !important;
+          outline-offset: 2px !important;
         }
       `;
     }
 
-    if (settings["highlight-titles"]) {
-      css += `
-        .highlight-titles h1, .highlight-titles h2, .highlight-titles h3, 
+    if (states['highlight-titles']) {
+      style += `
+        .highlight-titles h1, .highlight-titles h2, .highlight-titles h3,
         .highlight-titles h4, .highlight-titles h5, .highlight-titles h6 {
-          outline: 2px solid #fde2aa !important;
+          outline: 2px solid #0048ff !important;
+          outline-offset: 2px !important;
         }
       `;
     }
 
-    if (settings["big-cursor"]) {
-      css += `
-        body.big-cursor {
-          cursor: url("data:image/svg+xml,..."), auto !important;
+    if (states['big-cursor']) {
+      style += `
+        body.big-cursor, body.big-cursor * {
+          cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24'%3E%3Cpath d='M7,2l12,11.2l-5.8,0.5l3.3,7.3l-2.2,1l-3.2-7.4L7,18.5V2' fill='%23000000' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E"), auto !important;
         }
       `;
     }
 
-    if (settings["stop-animations"]) {
-      css += `
+    if (states['stop-animations']) {
+      style += `
         body.stop-animations * {
           transition: none !important;
           animation: none !important;
@@ -207,215 +395,303 @@
       `;
     }
 
-    if (settings["font-weight"]) {
-      css += `
-        body.font-weight-bold * {
-          font-weight: bold !important;
-        }
-      `;
-    }
-
-    css += `
-      .asw-widget .asw-menu-footer {
-        font-weight: bold;
-      }
-    `;
-
-    updateStyles(css, "asw-content-style");
+    applyStyle(style, 'asw-content-style');
     updateBodyClasses();
   }
 
-  // Toggles specific body classes based on settings
+  // Update body classes based on current states
   function updateBodyClasses() {
-    const features = ["dyslexic-font", "highlight-links", "highlight-titles", "big-cursor", "stop-animations", "font-weight-bold"];
-    features.forEach((feature) => {
-      document.body.classList.toggle(feature, !!settings[feature]);
+    const classes = ['readable-font', 'highlight-links', 'highlight-titles', 'big-cursor', 'stop-animations'];
+    classes.forEach(className => {
+      document.body.classList.toggle(className, !!states[className]);
     });
   }
 
-  // Toggles the reading guide visibility and movement
-  function toggleReadingGuide() {
-    const overlay = document.querySelector(".asw-reading-guide-overlay");
-    const isVisible = overlay.style.display === "block";
-
-    overlay.style.display = isVisible ? "none" : "block";
-
-    if (!isVisible) {
-      const guideBar = overlay.querySelector(".asw-reading-guide-bar");
-      guideBar.style.top = "50%";
-
-      const moveGuide = (event) => {
-        const topPosition = Math.max(0, Math.min(event.clientY - guideBar.offsetHeight / 2, window.innerHeight - guideBar.offsetHeight));
-        guideBar.style.top = `${topPosition}px`;
-      };
-
-      document.addEventListener("mousemove", moveGuide);
-    } else {
-      document.removeEventListener("mousemove", moveGuide);
+  // Apply a style to the document
+  function applyStyle(css, id) {
+    let style = document.getElementById(id);
+    if (!style) {
+      style = document.createElement('style');
+      style.id = id;
+      document.head.appendChild(style);
     }
+    style.textContent = css;
   }
 
-  // Updates the style element with new CSS
-  function updateStyles(cssContent, styleId) {
-    let styleElement = document.getElementById(styleId);
-    if (!styleElement) {
-      styleElement = document.createElement("style");
-      styleElement.id = styleId;
-      document.head.appendChild(styleElement);
-    }
-    styleElement.textContent = cssContent;
+  // Reset all applied styles
+  function resetAppliedStyles() {
+    applyContrast(null);
+    applyContentAdjustments();
+    applyFontSize(1);
+    updateBodyClasses();
   }
 
-  // Saves the current settings to local storage
-  function saveSettings() {
-    localStorage.setItem("aswSettings", JSON.stringify(settings));
-  }
-
-  // Creates the widget HTML structure
-  function createWidgetHTML() {
-    return `
-      <button class="asw-menu-btn" aria-label="Toggle Accessibility Menu">
-        <span class="material-icons">accessibility_new</span>
-      </button>
-      <div class="asw-menu" style="display: none;">
-        <button class="asw-menu-close" aria-label="Close Accessibility Menu">&times;</button>
-        <h2>Accessibility Options</h2>
-        <div class="asw-option-group">
-          <h3>Text Adjustments</h3>
-          <div class="asw-adjust-control" data-key="font-size">
-            <span>Font Size</span>
-            <div role="button" class="asw-minus" aria-label="Decrease Font Size">-</div>
-            <span class="asw-amount">100%</span>
-            <div role="button" class="asw-plus" aria-label="Increase Font Size">+</div>
-          </div>
-          <div class="asw-adjust-control" data-key="line-height">
-            <span>Line Height</span>
-            <div role="button" class="asw-minus" aria-label="Decrease Line Height">-</div>
-            <span class="asw-amount">100%</span>
-            <div role="button" class="asw-plus" aria-label="Increase Line Height">+</div>
-          </div>
-          <div class="asw-adjust-control" data-key="letter-spacing">
-            <span>Letter Spacing</span>
-            <div role="button" class="asw-minus" aria-label="Decrease Letter Spacing">-</div>
-            <span class="asw-amount">0%</span>
-            <div role="button" class="asw-plus" aria-label="Increase Letter Spacing">+</div>
-          </div>
-        </div>
-        <div class="asw-option-group">
-          <h3>Color Adjustments</h3>
-          <button class="asw-btn asw-filter" data-key="dark-contrast">Dark Contrast</button>
-          <button class="asw-btn asw-filter" data-key="light-contrast">Light Contrast</button>
-          <button class="asw-btn asw-filter" data-key="high-contrast">High Contrast</button>
-          <button class="asw-btn asw-filter" data-key="monochrome">Monochrome</button>
-        </div>
-        <div class="asw-option-group">
-          <h3>Additional Options</h3>
-          <button class="asw-btn" data-key="dyslexic-font">Dyslexic Font</button>
-          <button class="asw-btn" data-key="highlight-links">Highlight Links</button>
-          <button class="asw-btn" data-key="highlight-titles">Highlight Titles</button>
-          <button class="asw-btn" data-key="big-cursor">Big Cursor</button>
-          <button class="asw-btn" data-key="stop-animations">Stop Animations</button>
-          <button class="asw-btn" data-key="reading-guide">Reading Guide</button>
-          <button class="asw-btn" data-key="font-weight">Bold Text</button>
-        </div>
-        <button class="asw-menu-reset">Reset All</button>
-        <div class="asw-menu-footer">Provided by Brightways Accessibility</div>
-      </div>
-      <div class="asw-overlay"></div>
-      <div class="asw-reading-guide-overlay" style="display: none;">
-        <div class="asw-reading-guide-bar"></div>
-      </div>
-    `;
-  }
-
-  // Initializes the widget and restores settings from local storage
-  function initWidget() {
-    const widget = document.createElement("div");
-    widget.classList.add("asw-widget");
-    widget.innerHTML = createWidgetHTML();
-    document.body.appendChild(widget);
-
-    // Restore settings from local storage
-    const savedSettings = localStorage.getItem("aswSettings");
+  // Load settings from localStorage
+  function loadSettings() {
+    const savedSettings = localStorage.getItem('aswSettings');
     if (savedSettings) {
-      settings = JSON.parse(savedSettings);
-      applySavedSettings();
+      states = JSON.parse(savedSettings);
+      applyLoadedSettings();
+    }
+  }
+
+  // Save settings to localStorage
+  function saveSettings() {
+    localStorage.setItem('aswSettings', JSON.stringify(states));
+  }
+
+// Apply loaded settings
+function applyLoadedSettings() {
+  if (states.fontSize) {
+    applyFontSize(states.fontSize);
+    updateFontSizeDisplay(states.fontSize);
+  }
+
+  if (states.contrast) {
+    applyContrast(states.contrast);
+    const contrastButton = document.querySelector(`.asw-filter[data-key="${states.contrast}"]`);
+    if (contrastButton) {
+      contrastButton.classList.add('asw-selected');
+      contrastButton.setAttribute('aria-pressed', 'true');
+    }
+  }
+
+  applyContentAdjustments();
+
+  // Update UI to reflect loaded settings
+  Object.keys(states).forEach(key => {
+    const button = document.querySelector(`.asw-btn[data-key="${key}"]`);
+    if (button && states[key]) {
+      button.classList.add('asw-selected');
+      button.setAttribute('aria-pressed', 'true');
+    }
+  });
+}
+
+// Update font size display
+function updateFontSizeDisplay(size) {
+  const display = document.querySelector('.asw-amount');
+  if (display) {
+    if (size === 1) {
+      display.textContent = 'Default';
     } else {
-      settings = {}; // Initialize with empty settings if nothing is saved
+      const percentage = Math.round((size - 1) * 100);
+      display.textContent = `${percentage > 0 ? '+' : ''}${percentage}%`;
     }
-
-    // Set up event listeners
-    setupEventListeners();
-
-    // Apply initial styles
-    applyStyles();
   }
+}
 
-  // Apply saved settings to the widget and document
-  function applySavedSettings() {
-    if (settings["font-size"]) {
-      updateTextAdjustments("font-size", settings["font-size"]);
-    }
-    if (settings["line-height"]) {
-      updateTextAdjustments("line-height", settings["line-height"]);
-    }
-    if (settings["letter-spacing"]) {
-      updateTextAdjustments("letter-spacing", settings["letter-spacing"]);
-    }
+// Apply styles
+function applyStyles() {
+  const style = document.createElement('style');
+  style.textContent = `
+    @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
 
-    if (settings.contrast) {
-      applyFilter(settings.contrast);
+    .asw-widget {
+      font-family: 'Nunito', sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
 
-    applyStyles();
+    .asw-menu, .asw-menu-btn {
+      position: fixed;
+      right: 20px;
+      transition: 0.3s;
+      z-index: 500000;
+    }
 
-    // Update button states
-    document.querySelectorAll(".asw-btn").forEach((btn) => {
-      const key = btn.dataset.key;
-      if (settings[key]) {
-        btn.classList.add("asw-selected");
-        btn.setAttribute("aria-pressed", "true");
+    .asw-menu-btn {
+      bottom: 20px;
+      background: #FFD54F !important;
+      box-shadow: 0 5px 15px 0 rgba(37, 44, 97, 0.15), 0 2px 4px 0 rgba(93, 100, 148, 0.2);
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      cursor: pointer;
+      border: none;
+    }
+
+    .asw-menu-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .asw-menu {
+      display: none;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      border-radius: 8px 0 0 8px;
+      box-shadow: -1px 0 20px -14px #000;
+      background: #FFF9C4;
+      width: 400px;
+      max-width: 90vw;
+      line-height: 1;
+      font-size: 16px;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .asw-menu-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #FFD54F;
+      color: #333;
+      padding: 20px;
+      font-weight: 600;
+      font-size: 20px;
+    }
+
+    .asw-menu-header > div {
+      display: flex;
+    }
+
+    .asw-menu-header div[role="button"] {
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .asw-menu-content {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .asw-card {
+      margin-bottom: 30px;
+    }
+
+    .asw-card-title {
+      font-size: 22px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .asw-adjust-control {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      background: #FFF176;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .asw-control-label {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .asw-control-label .material-icons {
+      margin-right: 10px;
+    }
+
+    .asw-adjust-control div[role="button"] {
+      background: #FFD54F;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .asw-items {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .asw-btn {
+      width: 100%;
+      height: 120px;
+      border-radius: 8px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      color: #333;
+      background: #FFF176;
+      border: 2px solid #FFF176;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .asw-btn .material-icons {
+      margin-bottom: 10px;
+      font-size: 32px;
+    }
+
+    .asw-btn:hover {
+      border-color: #FFD54F;
+    }
+
+    .asw-btn.asw-selected {
+      background: #FFD54F;
+      color: #333;
+      border-color: #FFD54F;
+    }
+
+    .asw-divider {
+      height: 2px;
+      background: #FFD54F;
+      margin: 30px 0;
+    }
+
+    .asw-footer {
+      background: #FFD54F;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .asw-footer a {
+      color: #333;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .asw-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 499999;
+      display: none;
+    }
+
+    @media only screen and (max-width: 480px) {
+      .asw-menu {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0;
       }
-    });
 
-    // Update adjustment control values
-    ["font-size", "line-height", "letter-spacing"].forEach((key) => {
-      if (settings[key]) {
-        const control = document.querySelector(`.asw-adjust-control[data-key="${key}"]`);
-        if (control) {
-          const percentage = key === "letter-spacing" 
-            ? `${settings[key] > 0 ? "+" : ""}${Math.round(settings[key] * 100)}%`
-            : `${Math.round(100 * settings[key])}%`;
-          control.querySelector(".asw-amount").textContent = percentage;
-        }
+      .asw-items {
+        grid-template-columns: 1fr;
       }
-    });
-  }
+    }
+  `;
+  document.head.appendChild(style);
+}
 
-  // Set up all necessary event listeners
-  function setupEventListeners() {
-    const menuButton = document.querySelector(".asw-menu-btn");
-    const closeButton = document.querySelector(".asw-menu-close");
-    const resetButton = document.querySelector(".asw-menu-reset");
-    const overlay = document.querySelector(".asw-overlay");
-    const buttons = document.querySelectorAll(".asw-btn");
-    const adjustmentControls = document.querySelectorAll('.asw-adjust-control div[role="button"]');
+// Initialize variables
+let states = {};
 
-    menuButton.addEventListener("click", toggleMenu);
-    closeButton.addEventListener("click", closeMenu);
-    overlay.addEventListener("click", closeMenu);
-    resetButton.addEventListener("click", resetSettings);
-
-    buttons.forEach((btn) => btn.addEventListener("click", handleButtonClick));
-    adjustmentControls.forEach((control) => control.addEventListener("click", handleAdjustment));
-  }
-
-  let settings = {};
-
-  // Initialize the widget when the DOM is fully loaded
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initWidget);
-  } else {
-    initWidget();
-  }
+// Initialize the widget
+initAccessibilityWidget();
 })();
