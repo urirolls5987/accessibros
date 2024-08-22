@@ -20,7 +20,7 @@
   function createWidgetElement() {
     const widget = document.createElement("div");
     widget.classList.add("asw-widget");
-    widget.innerHTML = `
+    const newLocal = `
       <button class="asw-menu-btn" aria-label="Toggle Accessibility Menu">
         <span class="material-icons md-36 white">accessibility_new</span>
       </button>
@@ -63,18 +63,18 @@
                 <span class="material-icons">add</span>
               </div>
             </div>
-            <div class="asw-adjust-control">
-              <div class="asw-minus" data-key="letter-spacing" role="button" aria-pressed="false">
-                <span class="material-icons">remove</span>
-              </div>
-              <div class="asw-control-label">
-                <span class="material-icons">format_letter_spacing</span>
-                <span class="asw-amount">0px</span>
-              </div>
-              <div class="asw-plus" data-key="letter-spacing" role="button" aria-pressed="false">
-                <span class="material-icons">add</span>
-              </div>
-            </div>
+            // <div class="asw-adjust-control">
+            //   <div class="asw-minus" data-key="letter-spacing" role="button" aria-pressed="false">
+            //     <span class="material-icons">remove</span>
+            //   </div>
+            //   <div class="asw-control-label">
+            //     <span class="material-icons">format_letter_spacing</span>
+            //     <span class="asw-amount">0px</span>
+            //   </div>
+            //   <div class="asw-plus" data-key="letter-spacing" role="button" aria-pressed="false">
+            //     <span class="material-icons">add</span>
+            //   </div>
+            // </div>
             <div class="asw-items">
               <div class="asw-btn" role="button" aria-pressed="false" data-key="dyslexic-font">
                 <span class="material-icons">spellcheck</span>Dyslexic Font
@@ -135,6 +135,7 @@
         <div class="asw-reading-guide-bar"></div>
       </div>
     `;
+    widget.innerHTML = newLocal;
 
     return widget;
   }
@@ -194,12 +195,12 @@
       btn.setAttribute("aria-pressed", "false");
     });
 
-    document.querySelectorAll(".asw-amount").forEach((el) => {
-      el.textContent =
-        el.closest(".asw-adjust-control").dataset.key === "letter-spacing"
-          ? "0px"
-          : "100%";
-    });
+    // document.querySelectorAll(".asw-amount").forEach((el) => {
+    //   el.textContent =
+    //     el.closest(".asw-adjust-control").dataset.key === "letter-spacing"
+    //       ? "0px"
+    //       : "100%";
+    // });
 
     // Reset applied styles
     resetAppliedStyles();
