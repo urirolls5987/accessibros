@@ -252,20 +252,22 @@
       const key = button.dataset.key;
       let value = parseFloat(states[key]) || (key === 'letter-spacing' ? 0 : 1);
   
-      if (button.classList.contains('asw-minus')) {
-        value -= key === 'letter-spacing' ? 0.1 : 0.1;
-      } else {
-        value += key === 'letter-spacing' ? 0.1 : 0.1;
-      }
+      // if (button.classList.contains('asw-minus')) {
+      //   value -= key === 'letter-spacing' ? 0.1 : 0.1;
+      // } 
+      // else {
+      //   value += key === 'letter-spacing' ? 0.1 : 0.1;
+      // }
   
       // Limit values to reasonable ranges
       if (key === 'font-size') {
         value = Math.max(0.7, Math.min(value, 1.5));
       } else if (key === 'line-height') {
         value = Math.max(1, Math.min(value, 2));
-      } else if (key === 'letter-spacing') {
-        value = Math.max(-0.1, Math.min(value, 0.5));
-      }
+      } 
+      // else if (key === 'letter-spacing') {
+      //   value = Math.max(-0.1, Math.min(value, 0.5));
+      // }
   
       value = parseFloat(value.toFixed(2));
   
@@ -289,9 +291,10 @@
         element.style.fontSize = (originalSize * value) + 'px';
       } else if (property === 'line-height') {
         element.style.lineHeight = value.toString();
-      } else if (property === 'letter-spacing') {
-        element.style.letterSpacing = value + 'em';
-      }
+      } 
+      // else if (property === 'letter-spacing') {
+      //   element.style.letterSpacing = value + 'em';
+      // }
     });
   }
 
@@ -481,7 +484,7 @@
     applyContentAdjustments();
     applyTextProperty("font-size", 1);
     applyTextProperty("line-height", 1);
-    applyTextProperty("letter-spacing", 0);
+    // applyTextProperty("letter-spacing", 0);
     updateBodyClasses();
     document.querySelector(".asw-reading-guide-overlay").style.display = "none";
   }
@@ -512,10 +515,10 @@
       updateTextPropertyDisplay("line-height", states["line-height"]);
     }
 
-    if (states["letter-spacing"]) {
-      applyTextProperty("letter-spacing", states["letter-spacing"]);
-      updateTextPropertyDisplay("letter-spacing", states["letter-spacing"]);
-    }
+    // if (states["letter-spacing"]) {
+    //   applyTextProperty("letter-spacing", states["letter-spacing"]);
+    //   updateTextPropertyDisplay("letter-spacing", states["letter-spacing"]);
+    // }
 
     if (states.contrast) {
       applyContrast(states.contrast);
