@@ -39,39 +39,39 @@
         <div class="asw-menu-content">
           <div class="asw-card">
             <div class="asw-card-title">Text Adjustments</div>
-            <div class="asw-adjust-control" data-key="font-size">
-              <div class="asw-minus" role="button" aria-pressed="false">
+            <div class="asw-adjust-control">
+              <div class="asw-minus" data-key="font-size" role="button" aria-pressed="false">
                 <span class="material-icons">remove</span>
               </div>
               <div class="asw-control-label">
                 <span class="material-icons">format_size</span>
                 <span class="asw-amount">100%</span>
               </div>
-              <div class="asw-plus" role="button" aria-pressed="false">
+              <div class="asw-plus" data-key="font-size" role="button" aria-pressed="false">
                 <span class="material-icons">add</span>
               </div>
             </div>
-            <div class="asw-adjust-control" data-key="line-height">
-              <div class="asw-minus" role="button" aria-pressed="false">
+            <div class="asw-adjust-control">
+              <div class="asw-minus" data-key="line-height" role="button" aria-pressed="false">
                 <span class="material-icons">remove</span>
               </div>
               <div class="asw-control-label">
                 <span class="material-icons">format_line_spacing</span>
                 <span class="asw-amount">100%</span>
               </div>
-              <div class="asw-plus" role="button" aria-pressed="false">
+              <div class="asw-plus" data-key="line-height" role="button" aria-pressed="false">
                 <span class="material-icons">add</span>
               </div>
             </div>
-            <div class="asw-adjust-control" data-key="letter-spacing">
-              <div class="asw-minus" role="button" aria-pressed="false">
+            <div class="asw-adjust-control">
+              <div class="asw-minus" data-key="letter-spacing" role="button" aria-pressed="false">
                 <span class="material-icons">remove</span>
               </div>
               <div class="asw-control-label">
                 <span class="material-icons">format_letter_spacing</span>
                 <span class="asw-amount">100%</span>
               </div>
-              <div class="asw-plus" role="button" aria-pressed="false">
+              <div class="asw-plus" data-key="letter-spacing" role="button" aria-pressed="false">
                 <span class="material-icons">add</span>
               </div>
             </div>
@@ -241,7 +241,7 @@
   // Adjust text property (font size, line height, letter spacing)
   function adjustTextProperty(event) {
     const button = event.currentTarget;
-    const key = button.closest('.asw-adjust-control').dataset.key;
+    const key = button.dataset.key;
     let value = parseFloat(states[key]) || 1;
 
     if (button.classList.contains('asw-minus')) {
@@ -349,7 +349,7 @@
 
     if (states['highlight-titles']) {
       style += `
-        .highlight-titles h1, .highlight-titles h2, .highlight-titles h3,
+.highlight-titles h1, .highlight-titles h2, .highlight-titles h3,
         .highlight-titles h4, .highlight-titles h5, .highlight-titles h6 {
           outline: 2px solid #fde2aa !important;
           outline-offset: 2px !important;
@@ -707,7 +707,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.3);
         z-index: 499998;
         display: none;
       }
@@ -718,7 +718,7 @@
         width: 100%;
         height: 100px;
         background: transparent;
-        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.3);
       }
 
       @media only screen and (max-width: 768px) {
