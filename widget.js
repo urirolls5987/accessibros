@@ -245,59 +245,51 @@
     saveSettings();
   }
 
-  // Adjust text property (font size, line height, letter spacing)
-  function adjustTextProperty(event) {
-    const button = event.currentTarget;
-    const key = button.dataset.key;
-    let value = parseFloat(states[key]) || (key === "letter-spacing" ? 0 : 1);
-
-    if (button.classList.contains("asw-minus")) {
-      value -= key === "letter-spacing" ? 1 : 0.1;
-    } else {
-      value += key === "letter-spacing" ? 1 : 0.1;
+    // Adjust text property (font size, line height, letter spacing)
+    function adjustTextProperty(event) {
+      const button = event.currentTarget;
+      const key = button.dataset.key;
+      let value = parseFloat(states[key]) || (key === 'letter-spacing' ? 0 : 1);
+  
+      if (button.classList.contains('asw-minus')) {
+        value -= key === 'letter-spacing' ? 0.1 : 0.1;
+      } else {
+        value += key === 'letter-spacing' ? 0.1 : 0.1;
+      }
+  
+      // Limit values to reasonable ranges
+      if (key === 'font-size') {
+        value = Math.max(0.7, Math.min(value, 1.5));
+      } else if (key === 'line-height') {
+        value = Math.max(1, Math.min(value, 2));
+      } else if (key === 'letter-spacing') {
+        value = Math.max(-0.1, Math.min(value, 0.5));
+      }
+  
+      value = parseFloat(value.toFixed(2));
+  
+      applyTextProperty(key, value);
+  
+      const displayText = `${Math.round(value * 100)}%`;
+      button.closest('.asw-adjust-control').querySelector('.asw-amount').textContent = displayText;
+      states[key] = value;
+      saveSettings();
     }
-
-    // Limit values to reasonable ranges
-    if (key === "font-size") {
-      value = Math.max(0.7, Math.min(value, 1.5));
-    } else if (key === "line-height") {
-      value = Math.max(1, Math.min(value, 2));
-    } else if (key === "letter-spacing") {
-      value = Math.max(-3, Math.min(value, 10));
-    }
-
-    value = parseFloat(value.toFixed(2));
-
-    applyTextProperty(key, value);
-
-    const displayText =
-      key === "letter-spacing" ? `${value}px` : `${Math.round(value * 100)}%`;
-    button
-      .closest(".asw-adjust-control")
-      .querySelector(".asw-amount").textContent = displayText;
-    states[key] = value;
-    saveSettings();
-  }
-
   // Apply text property changes
   function applyTextProperty(property, value) {
-    const elements = document.querySelectorAll(
-      "body :not(.asw-widget):not(.asw-widget *)"
-    );
-    elements.forEach((element) => {
-      if (property === "font-size") {
-        let originalSize = element.getAttribute("data-asw-orgFontSize");
+    const elements = document.querySelectorAll('body :not(.asw-widget):not(.asw-widget *)');
+    elements.forEach(element => {
+      if (property === 'font-size') {
+        let originalSize = element.getAttribute('data-asw-orgFontSize');
         if (!originalSize) {
-          originalSize = parseInt(
-            window.getComputedStyle(element, null).getPropertyValue("font-size")
-          );
-          element.setAttribute("data-asw-orgFontSize", originalSize);
+          originalSize = parseInt(window.getComputedStyle(element, null).getPropertyValue('font-size'));
+          element.setAttribute('data-asw-orgFontSize', originalSize);
         }
-        element.style.fontSize = originalSize * value + "px";
-      } else if (property === "line-height") {
+        element.style.fontSize = (originalSize * value) + 'px';
+      } else if (property === 'line-height') {
         element.style.lineHeight = value.toString();
-      } else if (property === "letter-spacing") {
-        element.style.letterSpacing = value + "px";
+      } else if (property === 'letter-spacing') {
+        element.style.letterSpacing = value + 'em';
       }
     });
   }
@@ -563,237 +555,245 @@
     }
   }
 
-  // Apply styles
-  function applyStyles() {
-    const style = document.createElement("style");
-    style.textContent = `
-      @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
-      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
-
-      .asw-widget {
-        font-family: 'Nunito', sans-serif;
-        -webkit-font-smoothing: antialiased;
-      }
-
-      .asw-menu, .asw-menu-btn {
-        position: fixed;
-        left: 20px;
-        transition: 0.3s;
-        z-index: 500000;
-      }
-
-      .asw-menu-btn {
-        bottom: 20px;
-        background: #fde2aa !important;
-        box-shadow: 0 5px 15px 0 rgba(37, 44, 97, 0.15), 0 2px 4px 0 rgba(93, 100, 148, 0.2);
-        border-radius: 50%;
-        align-items: center;
-        justify-content: center;
-        width: 80px;
-        height: 80px;
-        display: flex;
-        cursor: pointer;
-        border: none;
-      }
-
-      .asw-menu-btn:hover {
-        transform: scale(1.05);
-      }
-
-      .asw-menu {
-        display: none;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        border-radius: 0 8px 8px 0;
-        box-shadow: 1px 0 20px -14px #000;
-        background: #ffffff;
-        width: 33vw;
-        min-width: 350px;
-        max-width: calc(100vw - 40px);
-        line-height: 1;
-        font-size: 16px;
-        height: 100vh;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .asw-menu-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: #fde2aa;
-        color: #333;
-        padding: 20px;
-        font-weight: 600;
-        font-size: 20px;
-      }
-
-      .asw-menu-header > div {
-        display: flex;
-      }
-
-      .asw-menu-header div[role="button"] {
-        padding: 8px;
-        cursor: pointer;
-      }
-
-      .asw-menu-content {
-        flex-grow: 1;
-        overflow-y: auto;
-        padding: 20px;
-      }
-
-      .asw-card {
-        margin-bottom: 30px;
-      }
-
-      .asw-card-title {
-        font-size: 22px;
-        margin-bottom: 20px;
-        font-weight: 600;
-        color: #333;
-      }
-
-      .asw-adjust-control {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        background: #fff;
-        padding: 15px;
-        border-radius: 8px;
-        border: 1px solid #fde2aa;
-      }
-
-      .asw-control-label {
-        display: flex;
-        align-items: center;
-        font-weight: 600;
-      }
-
-      .asw-control-label .material-icons {
-        margin-right: 10px;
-      }
-
-      .asw-adjust-control div[role="button"] {
-        background: #fde2aa;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #333;
-        cursor: pointer;
-      }
-
-      .asw-items {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-      }
-
-      .asw-btn {
-        width: 100%;
-        height: 120px;
-        border-radius: 8px;
-        padding: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        text-align: center;
-        color: #333;
-        background: #fffaf0;
-        border: 2px solid #fde2aa;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        font-weight: 600;
-      }
-
-      .asw-btn .material-icons {
-        margin-bottom: 10px;
-        font-size: 32px;
-      }
-
-      .asw-btn:hover {
-        background: #fff5e6;
-      }
-
-      .asw-btn.asw-selected {
-        background: #fde2aa;
-        color: #333;
-      }
-
-      .asw-divider {
-        height: 2px;
-        background: #fde2aa;
-        margin: 30px 0;
-      }
-
-      .asw-footer {
-        background: #fde2aa;
-        padding: 20px;
-        text-align: center;
-      }
-
-      .asw-footer a {
-        color: #333;
-        text-decoration: none;
-        font-size: 18px;
-        font-weight: 700;
-      }
-
-      .asw-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 499999;
-        display: none;
-      }
-
-      .asw-full-width {
-        grid-column: 1 / -1;
-      }
-
-      .asw-reading-guide-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.1);
-        z-index: 499998;
-        display: none;
-      }
-
-      .asw-reading-guide-bar {
-        position: absolute;
-        left: 0;
-        width: 100%;
-        height: 100px;
-        background: transparent;
-        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.1);
-      }
-
-      @media only screen and (max-width: 768px) {
+    // Apply styles
+    function applyStyles() {
+      const style = document.createElement('style');
+      style.textContent = `
+        @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+  
+        .asw-widget {
+          font-family: 'Nunito', sans-serif;
+          -webkit-font-smoothing: antialiased;
+        }
+  
+        .asw-menu, .asw-menu-btn {
+          position: fixed;
+          left: 20px;
+          transition: 0.3s;
+          z-index: 500000;
+        }
+  
+        .asw-menu-btn {
+          bottom: 20px;
+          background: #fde2aa !important;
+          box-shadow: 0 5px 15px 0 rgba(37, 44, 97, 0.15), 0 2px 4px 0 rgba(93, 100, 148, 0.2);
+          border-radius: 50%;
+          align-items: center;
+          justify-content: center;
+          width: 80px;
+          height: 80px;
+          display: flex;
+          cursor: pointer;
+          border: none;
+        }
+  
+        .asw-menu-btn:hover {
+          transform: scale(1.05);
+        }
+  
         .asw-menu {
-          width: calc(100% - 40px);
-          min-width: unset;
+          display: none;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          border-radius: 0 8px 8px 0;
+          box-shadow: 1px 0 20px -14px #000;
+          background: #ffffff;
+          width: 33vw;
+          min-width: 350px;
+          max-width: calc(100vw - 40px);
+          line-height: 1;
+          font-size: 16px;
+          height: 100vh;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
         }
-
+  
+        .asw-menu-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: #fde2aa;
+          color: #333;
+          padding: 20px;
+          font-weight: 600;
+          font-size: 20px;
+          height: 60px;
+          box-sizing: border-box;
+        }
+  
+        .asw-menu-header > div {
+          display: flex;
+        }
+  
+        .asw-menu-header div[role="button"] {
+          padding: 8px;
+          cursor: pointer;
+        }
+  
+        .asw-menu-content {
+          flex-grow: 1;
+          overflow-y: auto;
+          padding: 20px;
+          box-sizing: border-box;
+        }
+  
+        .asw-card {
+          margin-bottom: 30px;
+        }
+  
+        .asw-card-title {
+          font-size: 22px;
+          margin-bottom: 20px;
+          font-weight: 600;
+          color: #333;
+        }
+  
+        .asw-adjust-control {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+          background: #fff;
+          padding: 15px;
+          border-radius: 8px;
+          border: 1px solid #fde2aa;
+        }
+  
+        .asw-control-label {
+          display: flex;
+          align-items: center;
+          font-weight: 600;
+        }
+  
+        .asw-control-label .material-icons {
+          margin-right: 10px;
+        }
+  
+        .asw-adjust-control div[role="button"] {
+          background: #fde2aa;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #333;
+          cursor: pointer;
+        }
+  
         .asw-items {
-          grid-template-columns: 1fr;
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 15px;
         }
-      }
-    `;
-    document.head.appendChild(style);
-  }
+  
+        .asw-btn {
+          width: 100%;
+          height: 120px;
+          border-radius: 8px;
+          padding: 15px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          text-align: center;
+          color: #333;
+          background: #fffaf0;
+          border: 2px solid #fde2aa;
+          transition: all 0.3s ease;
+          cursor: pointer;
+          font-weight: 600;
+        }
+  
+        .asw-btn .material-icons {
+          margin-bottom: 10px;
+          font-size: 32px;
+        }
+  
+        .asw-btn:hover {
+          background: #fff5e6;
+        }
+  
+        .asw-btn.asw-selected {
+          background: #fde2aa;
+          color: #333;
+        }
+  
+        .asw-divider {
+          height: 2px;
+          background: #fde2aa;
+          margin: 30px 0;
+        }
+  
+        .asw-footer {
+          background: #fde2aa;
+          padding: 0 20px;
+          text-align: center;
+          height: 60px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+        }
+  
+        .asw-footer a {
+          color: #333;
+          text-decoration: none;
+          font-size: 18px;
+          font-weight: 700;
+        }
+  
+        .asw-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 499999;
+          display: none;
+        }
+  
+        .asw-full-width {
+          grid-column: 1 / -1;
+        }
+  
+        .asw-reading-guide-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.1);
+          z-index: 499998;
+          display: none;
+        }
+  
+        .asw-reading-guide-bar {
+          position: absolute;
+          left: 0;
+          width: 100%;
+          height: 100px;
+          background: transparent;
+          box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.1);
+        }
+  
+        @media only screen and (max-width: 768px) {
+          .asw-menu {
+            width: calc(100% - 40px);
+            min-width: unset;
+          }
+  
+          .asw-items {
+            grid-template-columns: 1fr;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
 
   // Initialize variables
   let states = {};
