@@ -248,103 +248,114 @@
     const key = button.dataset.key;
     let value = parseFloat(states[key]) || 1;
 
-    if (button.classList.contains("asw-minus")) {
+    if (button.classList.contains('asw-minus')) {
       value -= 0.1;
     } else {
       value += 0.1;
     }
 
-    value = Math.max(0.5, Math.min(value, 2));
+    // Limit values to reasonable ranges
+    if (key === 'font-size') {
+      value = Math.max(0.7, Math.min(value, 1.5));
+    } else if (key === 'line-height') {
+      value = Math.max(1, Math.min(value, 2));
+    } else if (key === 'letter-spacing') {
+      value = Math.max(0, Math.min(value, 0.3));
+    }
+
     value = parseFloat(value.toFixed(2));
 
     applyTextProperty(key, value);
 
     const displayText = `${Math.round(value * 100)}%`;
-    button
-      .closest(".asw-adjust-control")
-      .querySelector(".asw-amount").textContent = displayText;
+    button.closest('.asw-adjust-control').querySelector('.asw-amount').textContent = displayText;
     states[key] = value;
     saveSettings();
   }
 
+
   // Apply text property changes
   function applyTextProperty(property, value) {
-    const elements = document.querySelectorAll(
-      "body :not(.asw-widget):not(.asw-widget *)"
-    );
-    elements.forEach((element) => {
-      if (property === "font-size") {
-        let originalSize = element.getAttribute("data-asw-orgFontSize");
+    const elements = document.querySelectorAll('body :not(.asw-widget):not(.asw-widget *)');
+    elements.forEach(element => {
+      if (property === 'font-size') {
+        let originalSize = element.getAttribute('data-asw-orgFontSize');
         if (!originalSize) {
-          originalSize = parseInt(
-            window.getComputedStyle(element, null).getPropertyValue("font-size")
-          );
-          element.setAttribute("data-asw-orgFontSize", originalSize);
+          originalSize = parseInt(window.getComputedStyle(element, null).getPropertyValue('font-size'));
+          element.setAttribute('data-asw-orgFontSize', originalSize);
         }
-        element.style.fontSize = originalSize * value + "px";
-      } else if (property === "line-height") {
-        element.style.lineHeight = value;
-      } else if (property === "letter-spacing") {
-        element.style.letterSpacing = value - 1 + "em";
+        element.style.fontSize = (originalSize * value) + 'px';
+      } else if (property === 'line-height') {
+        element.style.lineHeight = value.toString();
+      } else if (property === 'letter-spacing') {
+        element.style.letterSpacing = (value - 1) + 'em';
       }
     });
   }
 
-  // Apply contrast changes
-  function applyContrast(contrastType) {
-    let style = "";
-    if (contrastType) {
-      let filterStyle = "";
-      switch (contrastType) {
-        case "dark-contrast":
-          filterStyle =
-            "color: #fff !important; fill: #FFF !important; background-color: #000 !important;";
-          break;
-        case "light-contrast":
-          filterStyle =
-            "color: #000 !important; fill: #000 !important; background-color: #FFF !important;";
-          break;
-        case "high-contrast":
-          filterStyle =
-            "-webkit-filter: contrast(125%); filter: contrast(125%);";
-          break;
-        case "monochrome":
-          filterStyle =
-            "-webkit-filter: grayscale(100%); filter: grayscale(100%);";
-          break;
-      }
+  // Apply content adjustments
+  function applyContentAdjustments() {
+    let style = '';
 
-      const selectors =
-        contrastType === "dark-contrast" || contrastType === "light-contrast"
-          ? [
-              "h1",
-              "h2",
-              "h3",
-              "h4",
-              "h5",
-              "h6",
-              "img",
-              "p",
-              "i",
-              "svg",
-              "a",
-              "button",
-              "label",
-              "li",
-              "ol",
-            ]
-          : [""];
-
-      selectors.forEach((selector) => {
-        style += `[data-asw-filter="${contrastType}"] ${selector} { ${filterStyle} }`;
-      });
+    if (states['dyslexic-font']) {
+      style += `
+        @font-face {
+          font-family: OpenDyslexic3;
+          src: url("https://website-widgets.pages.dev/fonts/OpenDyslexic3-Regular.woff") format("woff"),
+               url("https://website-widgets.pages.dev/fonts/OpenDyslexic3-Regular.ttf") format("truetype");
+        }
+        body.dyslexic-font :not(.material-icons) {
+          font-family: OpenDyslexic3, Comic Sans MS, Arial, Helvetica, sans-serif !important;
+        }
+      `;
     }
 
-    applyStyle(style, "asw-filter-style");
-    document.documentElement.setAttribute(
-      "data-asw-filter",
-      contrastType || ""
-    );
+    if (states['highlight-links']) {
+      style += `
+        .highlight-links a[href] {
+          outline: 2px solid #fde2aa !important;
+          outline-offset: 2px !important;
+        }
+      `;
+    }
+
+    if (states['highlight-titles']) {
+      style += `
+        .highlight-titles h1, .highlight-titles h2, .highlight-titles h3,
+        .highlight-titles h4, .highlight-titles h5, .highlight-titles h6 {
+          outline: 2px solid #fde2aa !important;
+          outline-offset: 2px !important;
+        }
+      `;
+    }
+
+    if (states['big-cursor']) {
+      style += `
+        body.big-cursor, body.big-cursor * {
+          cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24'%3E%3Cpath d='M7,2l12,11.2l-5.8,0.5l3.3,7.3l-2.2,1l-3.2-7.4L7,18.5V2' fill='%23000000' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E"), auto !important;
+        }
+      `;
+    }
+
+    if (states['stop-animations']) {
+      style += `
+        body.stop-animations * {
+          transition: none !important;
+          animation: none !important;
+        }
+      `;
+    }
+
+    if (states['font-weight']) {
+      style += `
+        body.font-weight-bold :not(.material-icons) {
+          font-weight: bold !important;
+        }
+      `;
+    }
+
+    applyStyle(style, 'asw-content-style');
+    updateBodyClasses();
   }
 
   // Apply content adjustments
@@ -427,49 +438,27 @@
     });
   }
 
-  // Toggle reading guide
-  function toggleReadingGuide() {
-    const readingGuideOverlay = document.querySelector(
-      ".asw-reading-guide-overlay"
-    );
-    const isActive = readingGuideOverlay.style.display === "block";
-
-    readingGuideOverlay.style.display = isActive ? "none" : "block";
-
+   // Toggle reading guide
+   function toggleReadingGuide() {
+    const readingGuideOverlay = document.querySelector('.asw-reading-guide-overlay');
+    const isActive = readingGuideOverlay.style.display === 'block';
+    
+    readingGuideOverlay.style.display = isActive ? 'none' : 'block';
+    
     if (!isActive) {
-      const bar = readingGuideOverlay.querySelector(".asw-reading-guide-bar");
-      bar.style.top = "50%";
-
-      let isDragging = false;
-      let startY;
-
-      const startDrag = (e) => {
-        isDragging = true;
-        startY = e.clientY - bar.offsetTop;
+      const bar = readingGuideOverlay.querySelector('.asw-reading-guide-bar');
+      
+      const moveBar = (e) => {
+        const y = e.clientY;
+        bar.style.top = `${Math.max(0, Math.min(y - bar.offsetHeight / 2, window.innerHeight - bar.offsetHeight))}px`;
       };
-
-      const drag = (e) => {
-        if (isDragging) {
-          const newY = e.clientY - startY;
-          bar.style.top = `${Math.max(
-            0,
-            Math.min(newY, window.innerHeight - bar.offsetHeight)
-          )}px`;
-        }
-      };
-
-      const stopDrag = () => {
-        isDragging = false;
-      };
-
-      bar.addEventListener("mousedown", startDrag);
-      bar.addEventListener("touchstart", (e) => startDrag(e.touches[0]));
-
-      document.addEventListener("mousemove", drag);
-      document.addEventListener("touchmove", (e) => drag(e.touches[0]));
-
-      document.addEventListener("mouseup", stopDrag);
-      document.addEventListener("touchend", stopDrag);
+      
+      document.addEventListener('mousemove', moveBar);
+      
+      readingGuideOverlay.addEventListener('click', () => {
+        readingGuideOverlay.style.display = 'none';
+        document.removeEventListener('mousemove', moveBar);
+      });
     }
   }
 
@@ -564,7 +553,7 @@
 
   // Apply styles
   function applyStyles() {
-    const style = document.createElement("style");
+    const style = document.createElement('style');
     style.textContent = `
       @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
       @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
@@ -608,8 +597,8 @@
         box-shadow: 1px 0 20px -14px #000;
         background: #ffffff;
         width: 33vw;
-        min-width: 400px;
-        max-width: 90vw;
+        min-width: 350px;
+        max-width: calc(100vw - 40px);
         line-height: 1;
         font-size: 16px;
         height: 100vh;
@@ -742,7 +731,7 @@
         color: #333;
         text-decoration: none;
         font-size: 18px;
-        font-weight: 600;
+        font-weight: 700;
       }
 
       .asw-overlay {
@@ -766,7 +755,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.7);
         z-index: 499998;
         display: none;
       }
@@ -775,16 +764,15 @@
         position: absolute;
         left: 0;
         width: 100%;
-        height: 50px;
-        background: rgba(255, 255, 255, 0.9);
-        cursor: move;
+        height: 100px;
+        background: transparent;
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
       }
 
       @media only screen and (max-width: 768px) {
         .asw-menu {
-          width: 100%;
-          max-width: 100%;
-          border-radius: 0;
+          width: calc(100% - 40px);
+          min-width: unset;
         }
 
         .asw-items {
@@ -794,7 +782,7 @@
     `;
     document.head.appendChild(style);
   }
-
+  
   // Initialize variables
   let states = {};
 
