@@ -84,7 +84,7 @@
     let value = parseFloat(settings[key]) || 1;
 
     value += control.classList.contains("asw-minus") ? -0.1 : 0.1;
-    value = Math.max(0.5, Math.min(value, 2));
+    value = Math.max(0.7, Math.min(value, 1.5));
     value = parseFloat(value.toFixed(2));
 
     updateTextAdjustments(key, value);
@@ -115,7 +115,7 @@
         } else if (key === "line-height") {
           element.style.lineHeight = value;
         } else if (key === "letter-spacing") {
-          element.style.letterSpacing = value - 1 + "em";
+          element.style.letterSpacing = (value - 1) + "em";
         }
       });
   }
@@ -216,7 +216,7 @@
       `;
     }
 
-    if (settings["font-weight"]) {
+    if (settings["font-weight-bold"]) {
       css += `
         body.font-weight-bold {
           font-weight: bold !important;
@@ -252,36 +252,10 @@
 
     if (!isVisible) {
       const guideBar = overlay.querySelector(".asw-reading-guide-bar");
-      guideBar.style.top = "50%";
-
-      let offsetY = 0;
-      let isDragging = false;
-
-      const startDrag = (event) => {
-        isDragging = true;
-        offsetY = event.clientY - guideBar.offsetTop;
-      };
-
-      const moveGuide = (event) => {
-        if (isDragging) {
-          const topPosition = Math.max(
-            0,
-            Math.min(
-              event.clientY - offsetY,
-              window.innerHeight - guideBar.offsetHeight
-            )
-          );
-          guideBar.style.top = `${topPosition}px`;
-        }
-      };
-
-      const stopDrag = () => {
-        isDragging = false;
-      };
-
-      guideBar.addEventListener("mousedown", startDrag);
-      document.addEventListener("mousemove", moveGuide);
-      document.addEventListener("mouseup", stopDrag);
+      document.addEventListener("mousemove", (e) => {
+        const y = e.clientY;
+        guideBar.style.top = `${y}px`;
+      });
     }
   }
 
