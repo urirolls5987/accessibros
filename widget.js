@@ -536,7 +536,7 @@
   font-family: 'Nunito', sans-serif;
   -webkit-font-smoothing: antialiased;
   display: flex;
-  justify-content: center; /* Center the widget horizontally */
+  justify-content: center;
   align-items: center;
 }
 
@@ -554,15 +554,15 @@
   border-radius: 50%;
   align-items: center;
   justify-content: center;
-  width: 60px; /* Reduced size */
-  height: 60px; /* Reduced size */
+  width: 60px;
+  height: 60px;
   display: flex;
   cursor: pointer;
   border: none;
 }
 
 .asw-menu-btn .material-icons {
-  font-size: 32px; /* Adjusted icon size */
+  font-size: 32px;
 }
 
 .asw-menu {
@@ -573,13 +573,13 @@
   border-radius: 0 8px 8px 0;
   box-shadow: 1px 0 20px -14px #000;
   background: #ffffff;
-  width: 25vw; /* Adjusted width */
-  min-width: 300px;
-  max-width: 100%; /* Prevent exceeding screen width */
+  width: 300px;
+  max-width: 100%;
   line-height: 1;
   font-size: 16px;
   height: 100vh;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -590,10 +590,10 @@
   justify-content: space-between;
   background: #fde2aa;
   color: #333;
-  padding: 15px; /* Adjusted padding */
+  padding: 15px 20px;
   font-weight: 800;
   font-size: 20px;
-  height: 80px; /* Adjusted height */
+  height: 80px;
   box-sizing: border-box;
 }
 
@@ -609,7 +609,7 @@
 .asw-menu-content {
   flex-grow: 1;
   overflow-y: auto;
-  padding: 15px; /* Adjusted padding */
+  padding: 20px;
   box-sizing: border-box;
 }
 
@@ -618,8 +618,8 @@
 }
 
 .asw-card-title {
-  font-size: 22px;
-  margin-bottom: 20px;
+  font-size: 20px;
+  margin-bottom: 15px;
   font-weight: 600;
   color: #333;
 }
@@ -648,8 +648,8 @@
 .asw-adjust-control div[role="button"] {
   background: #fde2aa;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -660,14 +660,17 @@
 .asw-items {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px; /* Adjusted gap */
+  gap: 10px;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .asw-btn {
   width: 100%;
-  height: 100px; /* Reduced button height */
+  height: 100px;
   border-radius: 8px;
-  padding: 10px; /* Adjusted padding */
+  padding: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -679,11 +682,13 @@
   transition: all 0.3s ease;
   cursor: pointer;
   font-weight: 600;
+  font-size: 14px;
+  box-sizing: border-box;
 }
 
 .asw-btn .material-icons {
   margin-bottom: 5px;
-  font-size: 24px; /* Adjusted icon size */
+  font-size: 24px;
 }
 
 .asw-btn:hover {
@@ -698,14 +703,15 @@
 .asw-divider {
   height: 2px;
   background: #fde2aa;
-  margin: 20px 0; /* Adjusted margin */
+  margin: 20px 0;
+  width: 100%;
 }
 
 .asw-footer {
   background: #fde2aa;
-  padding: 0 15px; /* Adjusted padding */
+  padding: 0 20px;
   text-align: center;
-  height: 80px; /* Adjusted height */
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -715,7 +721,7 @@
 .asw-footer a {
   color: #333;
   text-decoration: none;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 800;
 }
 
@@ -754,12 +760,11 @@
   box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.1);
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 350px) {
   .asw-menu {
-    width: 100%; /* Full width on small screens */
-    left: 0;
+    width: 100%;
   }
-
+  
   .asw-items {
     grid-template-columns: 1fr;
   }
