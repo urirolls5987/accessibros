@@ -532,12 +532,12 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
 
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
-
 .asw-widget {
   font-family: 'Nunito', sans-serif;
   -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center; /* Center the widget horizontally */
+  align-items: center;
 }
 
 .asw-menu, .asw-menu-btn {
@@ -554,15 +554,15 @@
   border-radius: 50%;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
+  width: 60px; /* Reduced size */
+  height: 60px; /* Reduced size */
   display: flex;
   cursor: pointer;
   border: none;
 }
 
 .asw-menu-btn .material-icons {
-  font-size: 32px;
+  font-size: 32px; /* Adjusted icon size */
 }
 
 .asw-menu {
@@ -573,13 +573,13 @@
   border-radius: 0 8px 8px 0;
   box-shadow: 1px 0 20px -14px #000;
   background: #ffffff;
-  width: 300px;
-  max-width: 100%;
+  width: 25vw; /* Adjusted width */
+  min-width: 300px;
+  max-width: 100%; /* Prevent exceeding screen width */
   line-height: 1;
   font-size: 16px;
   height: 100vh;
   overflow-y: auto;
-  overflow-x: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -590,10 +590,10 @@
   justify-content: space-between;
   background: #fde2aa;
   color: #333;
-  padding: 20px;
+  padding: 15px; /* Adjusted padding */
   font-weight: 800;
-  font-size: 22px;
-  height: 80px;
+  font-size: 20px;
+  height: 80px; /* Adjusted height */
   box-sizing: border-box;
 }
 
@@ -609,7 +609,7 @@
 .asw-menu-content {
   flex-grow: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 15px; /* Adjusted padding */
   box-sizing: border-box;
 }
 
@@ -618,8 +618,8 @@
 }
 
 .asw-card-title {
-  font-size: 20px;
-  margin-bottom: 15px;
+  font-size: 22px;
+  margin-bottom: 20px;
   font-weight: 600;
   color: #333;
 }
@@ -648,8 +648,8 @@
 .asw-adjust-control div[role="button"] {
   background: #fde2aa;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -660,15 +660,14 @@
 .asw-items {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  padding: 0 15px;
+  gap: 10px; /* Adjusted gap */
 }
 
 .asw-btn {
   width: 100%;
-  height: 100px;
+  height: 100px; /* Reduced button height */
   border-radius: 8px;
-  padding: 10px;
+  padding: 10px; /* Adjusted padding */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -680,12 +679,11 @@
   transition: all 0.3s ease;
   cursor: pointer;
   font-weight: 600;
-  font-size: 14px;
 }
 
 .asw-btn .material-icons {
   margin-bottom: 5px;
-  font-size: 24px;
+  font-size: 24px; /* Adjusted icon size */
 }
 
 .asw-btn:hover {
@@ -700,14 +698,14 @@
 .asw-divider {
   height: 2px;
   background: #fde2aa;
-  margin: 20px 0;
+  margin: 20px 0; /* Adjusted margin */
 }
 
 .asw-footer {
   background: #fde2aa;
-  padding: 0 20px;
+  padding: 0 15px; /* Adjusted padding */
   text-align: center;
-  height: 80px;
+  height: 80px; /* Adjusted height */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -717,7 +715,7 @@
 .asw-footer a {
   color: #333;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 800;
 }
 
@@ -756,15 +754,17 @@
   box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.1);
 }
 
-@media only screen and (max-width: 350px) {
+@media only screen and (max-width: 768px) {
   .asw-menu {
-    width: 100%;
+    width: 100%; /* Full width on small screens */
+    left: 0;
   }
-  
+
   .asw-items {
     grid-template-columns: 1fr;
   }
 }
+
     `;
     document.head.appendChild(style);
   }
