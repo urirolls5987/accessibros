@@ -605,7 +605,7 @@
 }
 
 .asw-card-title {
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 10px;
   font-weight: 600;
   color: #333;
