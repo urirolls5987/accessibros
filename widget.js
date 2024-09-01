@@ -573,8 +573,9 @@
   border-radius: 0 8px 8px 0;
   box-shadow: 1px 0 20px -14px #000;
   background: #ffffff;
-  width: 300px;
-  max-width: 100%;
+  width: 33.33vw; /* 1/3 of viewport width */
+  min-width: 300px; /* Minimum width for very large screens */
+  max-width: 100%; /* Maximum width for small screens */
   line-height: 1;
   font-size: 16px;
   height: 100vh;
@@ -592,7 +593,7 @@
   color: #333;
   padding: 15px 20px;
   font-weight: 800;
-  font-size: 20px;
+  font-size: 16px;
   height: 80px;
   box-sizing: border-box;
 }
@@ -721,7 +722,7 @@
 .asw-footer a {
   color: #333;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 800;
 }
 
@@ -760,13 +761,19 @@
   box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.1);
 }
 
-@media only screen and (max-width: 350px) {
+@media only screen and (max-width: 900px) {
   .asw-menu {
-    width: 100%;
+    width: 50vw; /* Half width for medium-sized screens */
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .asw-menu {
+    width: 100%; /* Full width for small screens */
   }
   
   .asw-items {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Single column layout for small screens */
   }
 }
 
