@@ -739,6 +739,7 @@
 
 .asw-full-width {
   grid-column: 1 / -1;
+  margin-top: 5px;
 }
 
 .asw-reading-guide-overlay {
